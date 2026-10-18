@@ -8,6 +8,7 @@ payload:
   - '+.bcebos.com'
   - '+.bigmodel.cn'
   - '+.chatglm.cn'
+  - '+.dashscope.aliyun.com'
   - '+.dashscope.aliyuncs.com'
   - '+.deepseek.cn'
   - '+.deepseek.com'
@@ -35,4 +36,5 @@ payload:
   - '+.tongyi.ai'
   - '+.volcengine.com'
   - '+.yiyan.baidu.com'
+  - '+.z.ai'
   - '+.zhipuai.cn'

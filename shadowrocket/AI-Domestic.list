@@ -1,5 +1,5 @@
 # AI-Domestic Ruleset (Auto-Generated)
-# Total Domains: 37
+# Total Domains: 39
 
 DOMAIN-SUFFIX,01.ai
 DOMAIN-SUFFIX,aliyun.com
@@ -10,6 +10,7 @@ DOMAIN-SUFFIX,baidubce.com
 DOMAIN-SUFFIX,bcebos.com
 DOMAIN-SUFFIX,bigmodel.cn
 DOMAIN-SUFFIX,chatglm.cn
+DOMAIN-SUFFIX,dashscope.aliyun.com
 DOMAIN-SUFFIX,dashscope.aliyuncs.com
 DOMAIN-SUFFIX,deepseek.cn
 DOMAIN-SUFFIX,deepseek.com
@@ -37,4 +38,5 @@ DOMAIN-SUFFIX,tencentmind.com
 DOMAIN-SUFFIX,tongyi.ai
 DOMAIN-SUFFIX,volcengine.com
 DOMAIN-SUFFIX,yiyan.baidu.com
+DOMAIN-SUFFIX,z.ai
 DOMAIN-SUFFIX,zhipuai.cn
