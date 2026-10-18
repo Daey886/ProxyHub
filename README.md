@@ -58,6 +58,12 @@ RULE-SET,https://raw.githubusercontent.com/Daey886/proxy-rules/main/surge/Stream
 
 ### 4. Clash / Mihomo (`rule-providers` 与策略组配置)
 
+#### 方案 A：一键全局扩展脚本 (推荐 · 适用于 Clash Verge Rev / Mihomo Party)
+无需手动繁琐修改订阅配置，在客户端的 **订阅扩展 (Script / 预处理)** 中引入或直接粘贴本脚本，即可全自动生成 **海外 AI (自动避开香港/国内节点)**、**国内 AI 直连**、**流媒体** 等专属策略组并注入置顶规则：
+- **加速引入链接**：`https://testingcf.jsdelivr.net/gh/Daey886/proxy-rules@main/clash/extension-script.js`
+- **GitHub 原生链接**：`https://raw.githubusercontent.com/Daey886/proxy-rules/main/clash/extension-script.js`
+
+#### 方案 B：手动配置 `rule-providers`
 > **💡 关键提示**：OpenAI、Anthropic Claude、Google Gemini 等海外 AI 平台**严格不支持中国大陆与中国香港 (HK) 节点**访问。建议在策略组中使用正则过滤，自动排除香港节点：
 
 ```yaml

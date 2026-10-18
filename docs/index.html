@@ -462,10 +462,29 @@
         <div class="chip">🚀 Shadowrocket</div>
         <div class="chip">🐱 Clash / Mihomo</div>
         <div class="chip">🎯 V2Ray / Xray</div>
+        <div class="chip" style="background: rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.35); color: #a5b4fc;">⚡ Clash 全局扩展脚本</div>
       </div>
     </div>
 
     <div class="grid" id="rules-grid"></div>
+
+    <!-- Clash 全局扩展脚本推荐卡片 -->
+    <div class="card" style="margin-top: 24px; border: 1px solid rgba(99, 102, 241, 0.3); background: rgba(15, 23, 42, 0.85);">
+      <div class="card-top">
+        <div class="card-header-left">
+          <div class="icon-box" style="background: rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.3);">⚡</div>
+          <div class="card-title">Clash 全局扩展配置脚本<br><span style="font-size:14px;font-weight:500;color:var(--text-muted);">(Clash Verge / Mihomo Party 预处理脚本)</span></div>
+        </div>
+        <span class="tag-pill tag-proxy">自动增强<br>(EXT SCRIPT)</span>
+      </div>
+      <div class="card-desc">
+        适用于 <strong>Clash Verge Rev / Mihomo Party</strong> 的订阅全局扩展（Script）。无需繁琐手动逐个添加规则，在软件中一键应用即可自动注入海外 AI（自动排除非支持区/HK）、国产 AI（强制 DIRECT 直连）、流媒体等完整策略组与规则链。
+      </div>
+      <div class="btn-actions">
+        <button class="action-btn btn-clash" onclick="openScriptModal()">📋 复制扩展脚本内容 / 引入链接</button>
+        <a class="action-btn btn-copy" href="https://testingcf.jsdelivr.net/gh/Daey886/proxy-rules@main/clash/extension-script.js" target="_blank">🌐 预览 JS 源码</a>
+      </div>
+    </div>
 
     <footer>
       <p>开源透明 · 无任何隐私外泄 · 零第三方依赖</p>
@@ -639,6 +658,15 @@
       if (e.target === modal) {
         closeModal();
       }
+    }
+
+    function openScriptModal() {
+      modalTitle.innerText = "Clash 全局扩展配置脚本";
+      btnSpeed.onclick = () => { copyToClipboard("https://testingcf.jsdelivr.net/gh/Daey886/proxy-rules@main/clash/extension-script.js"); closeModal(); };
+      btnSpeed.removeAttribute("href");
+      btnRaw.onclick = () => { copyToClipboard("https://raw.githubusercontent.com/Daey886/proxy-rules/main/clash/extension-script.js"); closeModal(); };
+      btnRaw.removeAttribute("href");
+      modal.classList.add("active");
     }
 
     const grid = document.getElementById("rules-grid");
