@@ -1,0 +1,42 @@
+name: Keep GitHub Pages Alive
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+
+concurrency:
+  group: pages-healthcheck
+  cancel-in-progress: true
+
+jobs:
+  healthcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check published site
+        id: check
+        shell: bash
+        run: |
+          set -uo pipefail
+          url="https://daey886.github.io/ProxyHub/?healthcheck=$(date +%s)"
+          for attempt in 1 2 3; do
+            status="$(curl -LfsS --max-time 30 -o /tmp/proxyhub.html -w '%{http_code}' "$url" || true)"
+            if [[ "$status" == "200" ]] && grep -q "<title>" /tmp/proxyhub.html; then
+              echo "Pages is healthy (HTTP $status)."
+              exit 0
+            fi
+            echo "Attempt $attempt failed (HTTP ${status:-request-error})."
+            sleep 10
+          done
+          exit 1
+
+      - name: Request Pages rebuild after failed check
+        if: failure() && steps.check.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --method POST repos/${{ github.repository }}/pages/builds
