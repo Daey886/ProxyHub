@@ -1,5 +1,6 @@
 /**
  * ProxyHub · Clash Verge / Mihomo Party 全局扩展脚本 (Global Extension Script)
+ * 版本号: v1.1.2
  * 作用：
  *  1. 各地区专线独立成组（如：🇭🇰 香港专线、🇯🇵 日本专线、⚡ 专线优选）
  *  2. 专线隔离开关 (true: 普通地区组屏蔽专线，避免误跑高倍率；false: 普通组亦包含专线)
@@ -10,6 +11,9 @@
  */
 
 function main(config, profileName) {
+  // 当前脚本版本号
+  const SCRIPT_VERSION = "v1.1.2";
+
   // 0. 用户偏好配置项 (可在此微调)
   const SETTINGS = {
     // 专线隔离与屏蔽开关：
