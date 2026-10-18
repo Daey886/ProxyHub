@@ -1,0 +1,15 @@
+# Streaming Rule-Provider for Clash / Mihomo
+payload:
+  - '+.youtube.com'
+  - '+.googlevideo.com'
+  - '+.ytimg.com'
+  - '+.netflix.com'
+  - '+.netflix.net'
+  - '+.nflxext.com'
+  - '+.nflximg.net'
+  - '+.nflxvideo.net'
+  - '+.spotify.com'
+  - '+.scdn.co'
+  - '+.spoti.fi'
+  - '+.bahamut.com.tw'
+  - '+.gamer.com.tw'

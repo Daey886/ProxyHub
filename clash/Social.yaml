@@ -1,0 +1,12 @@
+# Social Rule-Provider for Clash / Mihomo
+payload:
+  - '+.telegram.org'
+  - '+.t.me'
+  - '+.telegra.ph'
+  - '+.tdesktop.com'
+  - '+.twitter.com'
+  - '+.x.com'
+  - '+.twimg.com'
+  - '+.discord.com'
+  - '+.discord.gg'
+  - '+.discordapp.com'

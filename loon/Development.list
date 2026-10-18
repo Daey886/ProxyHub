@@ -1,0 +1,9 @@
+# Development Ruleset
+# Source: https://github.com/Daey886/proxy-rules
+
+DOMAIN-SUFFIX,github.com
+DOMAIN-SUFFIX,githubassets.com
+DOMAIN-SUFFIX,githubusercontent.com
+DOMAIN-SUFFIX,git-scm.com
+DOMAIN-SUFFIX,docker.com
+DOMAIN-SUFFIX,docker.io

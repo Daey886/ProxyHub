@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProxyHub · 现代化多平台代理规则中心</title>
+  <meta name="description" content="专为 Loon、Surge、Quantumult X、Shadowrocket、Clash 设计的高颜值一键导入分流规则库">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: rgba(16, 24, 40, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-hover-border: rgba(99, 102, 241, 0.4);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #6366f1;
+      --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+      --cyan-gradient: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+      --emerald-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(at 15% 15%, rgba(99, 102, 241, 0.15) 0px, transparent 45%),
+        radial-gradient(at 85% 20%, rgba(236, 72, 153, 0.12) 0px, transparent 40%),
+        radial-gradient(at 50% 80%, rgba(6, 182, 212, 0.1) 0px, transparent 50%);
+      background-attachment: fixed;
+      color: var(--text);
+      min-height: 100vh;
+      padding: 40px 20px 100px;
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 40px 0 50px;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #c7d2fe;
+      margin-bottom: 20px;
+      backdrop-filter: blur(8px);
+    }
+
+    .badge-pill span.dot {
+      width: 7px;
+      height: 7px;
+      background: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #10b981;
+    }
+
+    h1.hero-title {
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    h1.hero-title span.highlight {
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p.hero-desc {
+      max-width: 620px;
+      margin: 0 auto;
+      color: var(--text-muted);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* Client Bar */
+    .client-chips {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 32px 0 45px;
+    }
+
+    .chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 9999px;
+      font-size: 13px;
+      color: #cbd5e1;
+      font-weight: 500;
+    }
+
+    /* Cards Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .card {
+      position: relative;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 26px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    }
+
+    .card:hover {
+      border-color: var(--card-hover-border);
+      transform: translateY(-3px);
+      box-shadow: 0 20px 40px -15px rgba(99, 102, 241, 0.2);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .card-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.01em;
+    }
+
+    .tag-pill {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 8px;
+      letter-spacing: 0.02em;
+    }
+
+    .tag-proxy {
+      background: rgba(99, 102, 241, 0.15);
+      color: #818cf8;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .tag-direct {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .card-desc {
+      font-size: 14.5px;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 22px;
+    }
+
+    /* Action Buttons */
+    .btn-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 16px;
+      border-radius: 11px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s ease;
+      color: #ffffff;
+    }
+
+    .action-btn:active {
+      transform: scale(0.96);
+    }
+
+    .btn-loon {
+      background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+      box-shadow: 0 4px 12px rgba(234, 88, 12, 0.25);
+    }
+    .btn-loon:hover { filter: brightness(1.1); }
+
+    .btn-qx {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+    }
+    .btn-qx:hover { filter: brightness(1.1); }
+
+    .btn-surge {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+    .btn-surge:hover { filter: brightness(1.1); }
+
+    .btn-sr {
+      background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
+    }
+    .btn-sr:hover { filter: brightness(1.1); }
+
+    .btn-copy {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #e2e8f0;
+    }
+    .btn-copy:hover {
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(12px);
+      color: #f8fafc;
+      padding: 12px 24px;
+      border-radius: 9999px;
+      border: 1px solid rgba(255,255,255,0.2);
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 9999;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      margin-top: 60px;
+      color: var(--text-muted);
+      font-size: 13.5px;
+      line-height: 1.8;
+    }
+
+    footer a {
+      color: #818cf8;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="hero">
+      <div class="badge-pill">
+        <span class="dot"></span>
+        NSRingo 协议对齐 · 全平台协议直通
+      </div>
+      <h1 class="hero-title">高精细度 <span class="highlight">代理分流中心</span></h1>
+      <p class="hero-desc">模块化分流规则集，针对 2026 最新海外 AI、国产大模型、流媒体与开发栈量身定制，支持主流网络工具一键呼出安装。</p>
+      
+      <div class="client-chips">
+        <div class="chip">🎈 Loon</div>
+        <div class="chip">🌀 Quantumult X</div>
+        <div class="chip">🌊 Surge</div>
+        <div class="chip">🚀 Shadowrocket</div>
+        <div class="chip">🐱 Clash / Mihomo</div>
+        <div class="chip">⚡ SSR / ACL</div>
+      </div>
+    </div>
+
+    <div class="grid" id="rules-grid"></div>
+
+    <footer>
+      <p>开源透明 · 无任何隐私外泄 · 零第三方依赖</p>
+      <p>项目托管于 GitHub：<a href="https://github.com/Daey886/proxy-rules" target="_blank">Daey886/proxy-rules</a></p>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast">
+    <span>✅</span> <span id="toast-text">已成功复制规则链接到剪贴板</span>
+  </div>
+
+  <script>
+    const BASE_RAW = "https://raw.githubusercontent.com/Daey886/proxy-rules/main";
+
+    const modules = [
+      {
+        icon: "🤖",
+        title: "AI-Overseas (海外 AI 核心矩阵)",
+        policy: "代理分流 (PROXY)",
+        isDirect: false,
+        desc: "收录 OpenAI (ChatGPT/Sora)、Anthropic (Claude)、Google DeepMind (Gemini/Antigravity)、Cursor、Perplexity、Mistral、xAI (Grok)、Groq、OpenRouter 等顶尖海外模型服务。",
+        fileKey: "AI-Overseas"
+      },
+      {
+        icon: "🇨🇳",
+        title: "AI-Domestic (国产 AI 大模型矩阵)",
+        policy: "本地直连 (DIRECT)",
+        isDirect: true,
+        desc: "覆盖 DeepSeek、阿里百炼 (DashScope)、智谱 (GLM)、Kimi、豆包 (字节)、MiniMax、阶跃星辰、硅基流动等国产 AI API，强制本地直连，拒绝网络劣化与账号风控。",
+        fileKey: "AI-Domestic"
+      },
+      {
+        icon: "🎬",
+        title: "Streaming (全球流媒体精选)",
+        policy: "媒体分组 (STREAMING)",
+        isDirect: false,
+        desc: "包含 YouTube、Netflix、Spotify、巴哈姆特 (动画疯) 等流行流媒体服务，便于针对各区内容解锁做独立策略路由绑定。",
+        fileKey: "Streaming"
+      },
+      {
+        icon: "💬",
+        title: "Social (全球社交与即时通讯)",
+        policy: "通讯分组 (SOCIAL)",
+        isDirect: false,
+        desc: "Telegram、Twitter / X、Discord 等全天候即时通讯分流规则，保障消息推送不掉线与音视频低时延。",
+        fileKey: "Social"
+      },
+      {
+        icon: "💻",
+        title: "Development (开发者基础设施)",
+        policy: "加速分组 (DEV)",
+        isDirect: false,
+        desc: "GitHub、Docker Hub、GitLab 等日常开发与包管理器源加速分流，解决代码拉取超时与构建阻塞。",
+        fileKey: "Development"
+      }
+    ];
+
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      document.getElementById("toast-text").innerText = msg;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2200);
+    }
+
+    function copyToClipboard(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => showToast("已复制规则源链接！")).catch(() => fallbackCopy(text));
+      } else {
+        fallbackCopy(text);
+      }
+    }
+
+    function fallbackCopy(text) {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast("已复制规则源链接！");
+    }
+
+    const grid = document.getElementById("rules-grid");
+
+    modules.forEach(m => {
+      const loonRaw = `${BASE_RAW}/loon/${m.fileKey}.list`;
+      const qxRaw = `${BASE_RAW}/qx/${m.fileKey}.snippet`;
+      const surgeRaw = `${BASE_RAW}/surge/${m.fileKey}.list`;
+      const srRaw = `${BASE_RAW}/shadowrocket/${m.fileKey}.list`;
+      const clashRaw = `${BASE_RAW}/clash/${m.fileKey}.yaml`;
+
+      // NSRingo 风格 URL Scheme
+      const loonScheme = `loon://import?rule=${encodeURIComponent(loonRaw)}&tag=${encodeURIComponent(m.fileKey)}&policy=${m.isDirect ? 'DIRECT' : encodeURIComponent('海外AI')}&enable=true`;
+      const qxScheme = `quantumult-x:///add-resource?remote-resource=${encodeURIComponent(JSON.stringify({filter_remote: [qxRaw]}))}`;
+      const surgeScheme = `surge:///install-rule-set?url=${encodeURIComponent(surgeRaw)}`;
+      const srScheme = `shadowrocket://add/rule?url=${encodeURIComponent(srRaw)}`;
+
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="card-top">
+          <div class="card-header-left">
+            <div class="icon-box">${m.icon}</div>
+            <div class="card-title">${m.title}</div>
+          </div>
+          <span class="tag-pill ${m.isDirect ? 'tag-direct' : 'tag-proxy'}">${m.policy}</span>
+        </div>
+        <div class="card-desc">${m.desc}</div>
+        <div class="btn-actions">
+          <a class="action-btn btn-loon" href="${loonScheme}">🎈 Loon 一键导入</a>
+          <a class="action-btn btn-qx" href="${qxScheme}">🌀 QX 一键导入</a>
+          <a class="action-btn btn-surge" href="${surgeScheme}">🌊 Surge 一键导入</a>
+          <a class="action-btn btn-sr" href="${srScheme}">🚀 小火箭一键导入</a>
+          <button class="action-btn btn-copy" onclick="copyToClipboard('${clashRaw}')">🐱 复制 Clash/通用源</button>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  </script>
+</body>
+</html>
