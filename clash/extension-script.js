@@ -270,9 +270,8 @@ function main(config, profileName) {
   const customGroups = [
     // 📦 版本信息：在客户端策略组列表中显示当前扩展脚本版本
     {
-      name: "📌 版本信息",
+      name: `📌 当前版本：${SCRIPT_VERSION}`,
       type: "select",
-      use: [VERSION_PROVIDER],
       proxies: ["DIRECT"]
     },
     // Proxy：直接选择各个节点组
@@ -326,7 +325,7 @@ function main(config, profileName) {
   const customGroupNames = new Set(customGroups.map(group => group.name));
   const existingGroups = config["proxy-groups"].filter(group => {
     // 清理旧版本号组（版本号变化后名称不同），避免重复显示
-    const isOldVersionGroup = typeof group.name === "string" && (group.name === "📌 版本信息" || group.name.startsWith("📌 最新版本："));
+    const isOldVersionGroup = typeof group.name === "string" && (group.name === "📌 版本信息" || group.name.startsWith("📌 当前版本：") || group.name.startsWith("📌 最新版本："));
     return !customGroupNames.has(group.name) && !isOldVersionGroup;
   });
   config["proxy-groups"] = [...customGroups, ...existingGroups];
