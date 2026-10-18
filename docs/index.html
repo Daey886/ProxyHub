@@ -8,7 +8,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #090d16;
@@ -19,8 +19,6 @@
       --text-muted: #94a3b8;
       --accent: #6366f1;
       --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
-      --cyan-gradient: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-      --emerald-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
     }
 
     * {
@@ -40,18 +38,17 @@
       background-attachment: fixed;
       color: var(--text);
       min-height: 100vh;
-      padding: 40px 20px 100px;
+      padding: 30px 16px 80px;
     }
 
     .container {
-      max-width: 980px;
+      max-width: 900px;
       margin: 0 auto;
     }
 
-    /* Hero Section */
     .hero {
       text-align: center;
-      padding: 40px 0 50px;
+      padding: 30px 0 35px;
     }
 
     .badge-pill {
@@ -65,7 +62,7 @@
       font-size: 13px;
       font-weight: 600;
       color: #c7d2fe;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       backdrop-filter: blur(8px);
     }
 
@@ -78,11 +75,11 @@
     }
 
     h1.hero-title {
-      font-size: clamp(32px, 5vw, 48px);
+      font-size: clamp(28px, 5vw, 42px);
       font-weight: 800;
       letter-spacing: -0.03em;
-      line-height: 1.15;
-      margin-bottom: 16px;
+      line-height: 1.2;
+      margin-bottom: 12px;
       background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -95,90 +92,82 @@
     }
 
     p.hero-desc {
-      max-width: 620px;
+      max-width: 600px;
       margin: 0 auto;
       color: var(--text-muted);
-      font-size: 16px;
+      font-size: 14.5px;
       line-height: 1.6;
     }
 
-    /* Client Bar */
     .client-chips {
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 10px;
-      margin: 32px 0 45px;
+      gap: 8px;
+      margin: 24px 0 35px;
     }
 
     .chip {
       display: flex;
       align-items: center;
       gap: 6px;
-      padding: 6px 14px;
+      padding: 5px 12px;
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 9999px;
-      font-size: 13px;
+      font-size: 12.5px;
       color: #cbd5e1;
-      font-weight: 500;
     }
 
-    /* Cards Grid */
     .grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 20px;
+      gap: 18px;
     }
 
     .card {
-      position: relative;
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 20px;
-      padding: 26px;
+      padding: 22px;
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.25s ease;
       box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-    }
-
-    .card:hover {
-      border-color: var(--card-hover-border);
-      transform: translateY(-3px);
-      box-shadow: 0 20px 40px -15px rgba(99, 102, 241, 0.2);
     }
 
     .card-top {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+      gap: 8px;
     }
 
     .card-header-left {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 12px;
     }
 
     .icon-box {
-      width: 44px;
-      height: 44px;
+      width: 42px;
+      height: 42px;
       border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
+      font-size: 20px;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
     }
 
     .card-title {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 700;
       color: #fff;
-      letter-spacing: -0.01em;
+      line-height: 1.35;
     }
 
     .tag-pill {
@@ -186,7 +175,6 @@
       font-weight: 600;
       padding: 4px 8px;
       border-radius: 8px;
-      letter-spacing: 0.02em;
       text-align: center;
       line-height: 1.3;
       white-space: nowrap;
@@ -206,10 +194,10 @@
     }
 
     .card-desc {
-      font-size: 14.5px;
+      font-size: 14px;
       line-height: 1.6;
       color: var(--text-muted);
-      margin-bottom: 22px;
+      margin-bottom: 20px;
     }
 
     /* Action Buttons - 严格移动端 2 列 3 行布局 */
@@ -252,33 +240,166 @@
       background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
       box-shadow: 0 4px 12px rgba(234, 88, 12, 0.25);
     }
-    .btn-loon:hover { filter: brightness(1.1); }
-
     .btn-qx {
       background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
     }
-    .btn-qx:hover { filter: brightness(1.1); }
-
     .btn-surge {
       background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
       box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
     }
-    .btn-surge:hover { filter: brightness(1.1); }
-
     .btn-sr {
       background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
       box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
     }
-    .btn-sr:hover { filter: brightness(1.1); }
-
     .btn-copy {
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.12);
       color: #e2e8f0;
     }
-    .btn-copy:hover {
-      background: rgba(255, 255, 255, 0.14);
+
+    /* Modal 弹窗样式 */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 10000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 420px;
+      padding: 24px 20px;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8);
+      transform: scale(0.92);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-backdrop.active .modal-box {
+      transform: scale(1);
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #fff;
+    }
+
+    .modal-subtitle {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .modal-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .modal-opt-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-radius: 14px;
+      text-decoration: none;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+    }
+
+    .modal-opt-btn:active {
+      transform: scale(0.98);
+    }
+
+    .opt-speed {
+      background: rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.3);
+      color: #34d399;
+    }
+    .opt-speed:hover {
+      background: rgba(16, 185, 129, 0.18);
+    }
+
+    .opt-raw {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.12);
+      color: #cbd5e1;
+    }
+    .opt-raw:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .opt-info {
+      text-align: left;
+    }
+    .opt-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+    .opt-tag {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #10b981;
+      color: #fff;
+    }
+    .opt-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .opt-arrow {
+      font-size: 18px;
+      opacity: 0.6;
+    }
+
+    .modal-close-btn {
+      width: 100%;
+      padding: 11px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .modal-close-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
       color: #fff;
     }
 
@@ -298,7 +419,7 @@
       font-weight: 500;
       opacity: 0;
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      z-index: 9999;
+      z-index: 99999;
       box-shadow: 0 15px 35px rgba(0,0,0,0.6);
       display: flex;
       align-items: center;
@@ -310,10 +431,9 @@
       opacity: 1;
     }
 
-    /* Footer */
     footer {
       text-align: center;
-      margin-top: 60px;
+      margin-top: 50px;
       color: var(--text-muted);
       font-size: 13.5px;
       line-height: 1.8;
@@ -324,10 +444,6 @@
       text-decoration: none;
       font-weight: 500;
     }
-
-    footer a:hover {
-      text-decoration: underline;
-    }
   </style>
 </head>
 <body>
@@ -335,10 +451,10 @@
     <div class="hero">
       <div class="badge-pill">
         <span class="dot"></span>
-        NSRingo 协议对齐 · 全平台协议直通
+        NSRingo 协议对齐 · 全平台网络加速直通
       </div>
       <h1 class="hero-title">高精细度 <span class="highlight">代理分流中心</span></h1>
-      <p class="hero-desc">模块化分流规则集，针对 2026 最新海外 AI、国产大模型、流媒体与开发栈量身定制，支持主流网络工具一键呼出安装。</p>
+      <p class="hero-desc">模块化分流规则集，内置国内 CDN 加速与海外原源双通道，彻底解决国内直连 GitHub 规则拉取失败或超时问题。</p>
       
       <div class="client-chips">
         <div class="chip">🎈 Loon</div>
@@ -346,7 +462,6 @@
         <div class="chip">🌊 Surge</div>
         <div class="chip">🚀 Shadowrocket</div>
         <div class="chip">🐱 Clash / Mihomo</div>
-        <div class="chip">⚡ SSR / ACL</div>
       </div>
     </div>
 
@@ -358,12 +473,44 @@
     </footer>
   </div>
 
+  <!-- 弹窗二选一：有加速 vs 无加速 -->
+  <div class="modal-backdrop" id="importModal" onclick="closeModalOnBackdrop(event)">
+    <div class="modal-box">
+      <div class="modal-title" id="modalTitle">导入规则配置</div>
+      <div class="modal-subtitle">检测到不同网络环境，请选择适合你的规则链接通道：</div>
+      
+      <div class="modal-options">
+        <!-- 选项 1: 有加速 -->
+        <a class="modal-opt-btn opt-speed" id="btnSpeed" href="#">
+          <div class="opt-info">
+            <div class="opt-name">⚡ 国内高速加速通道 <span class="opt-tag">推荐</span></div>
+            <div class="opt-desc">走全球 CDN 节点镜像，国内直连不卡顿，无需开翻墙也能顺利下载规则</div>
+          </div>
+          <div class="opt-arrow">➔</div>
+        </a>
+
+        <!-- 选项 2: 无加速 -->
+        <a class="modal-opt-btn opt-raw" id="btnRaw" href="#">
+          <div class="opt-info">
+            <div class="opt-name">🌐 GitHub 官方原生直连</div>
+            <div class="opt-desc">直接连接 raw.githubusercontent.com，适合海外网络或已开启全局翻墙</div>
+          </div>
+          <div class="opt-arrow">➔</div>
+        </a>
+      </div>
+
+      <button class="modal-close-btn" onclick="closeModal()">取消</button>
+    </div>
+  </div>
+
   <div class="toast" id="toast">
     <span>✅</span> <span id="toast-text">已成功复制规则链接到剪贴板</span>
   </div>
 
   <script>
+    // GitHub 官方直连 vs 国内 CDN 高速加速镜像
     const BASE_RAW = "https://raw.githubusercontent.com/Daey886/proxy-rules/main";
+    const BASE_SPEED = "https://testingcf.jsdelivr.net/gh/Daey886/proxy-rules@main";
 
     const modules = [
       {
@@ -371,7 +518,7 @@
         title: "AI-Overseas<br><span style='font-size:14px;font-weight:500;color:var(--text-muted);'>(海外 AI 核心矩阵)</span>",
         policy: "节点筛选<br>(避开非支持区)",
         isDirect: false,
-        desc: "收录 OpenAI、Claude、Gemini、Antigravity、Cursor、Perplexity 等顶尖模型服务。<strong>注意：请务必绑定美/日/新/英等支持地区节点，自动规避 HK (香港) 及 CN 等封锁区域，防止被平台风控封号。</strong>",
+        desc: "收录 OpenAI、Claude、Gemini、Antigravity、Cursor、Perplexity 等顶尖模型服务。<strong>注意：请务必绑定美/日/新/英等支持地区节点，自动规避 HK (香港) 等不支持区。</strong>",
         fileKey: "AI-Overseas"
       },
       {
@@ -433,27 +580,69 @@
       showToast("已复制规则源链接！");
     }
 
+    // 弹窗逻辑
+    const modal = document.getElementById("importModal");
+    const btnSpeed = document.getElementById("btnSpeed");
+    const btnRaw = document.getElementById("btnRaw");
+    const modalTitle = document.getElementById("modalTitle");
+
+    function openImportModal(clientName, fileKey, isDirect, format) {
+      modalTitle.innerText = `${clientName} · 一键导入通道`;
+
+      // 构造生成函数
+      function generateUrl(baseUrl) {
+        if (clientName.includes("Clash")) {
+          return `${baseUrl}/clash/${fileKey}.yaml`;
+        }
+        if (clientName.includes("Loon")) {
+          const rawUrl = `${baseUrl}/loon/${fileKey}.list`;
+          return `loon://import?rule=${encodeURIComponent(rawUrl)}&tag=${encodeURIComponent(fileKey)}&policy=${isDirect ? 'DIRECT' : encodeURIComponent('海外AI')}&enable=true`;
+        }
+        if (clientName.includes("QX")) {
+          const rawUrl = `${baseUrl}/qx/${fileKey}.snippet`;
+          return `quantumult-x:///add-resource?remote-resource=${encodeURIComponent(JSON.stringify({filter_remote: [rawUrl]}))}`;
+        }
+        if (clientName.includes("Surge")) {
+          const rawUrl = `${baseUrl}/surge/${fileKey}.list`;
+          return `surge:///install-rule-set?url=${encodeURIComponent(rawUrl)}`;
+        }
+        if (clientName.includes("小火箭")) {
+          const rawUrl = `${baseUrl}/shadowrocket/${fileKey}.list`;
+          return `shadowrocket://add/rule?url=${encodeURIComponent(rawUrl)}`;
+        }
+        return baseUrl;
+      }
+
+      if (clientName.includes("Clash")) {
+        btnSpeed.onclick = () => { copyToClipboard(generateUrl(BASE_SPEED)); closeModal(); };
+        btnSpeed.removeAttribute("href");
+        btnRaw.onclick = () => { copyToClipboard(generateUrl(BASE_RAW)); closeModal(); };
+        btnRaw.removeAttribute("href");
+      } else {
+        btnSpeed.onclick = () => { closeModal(); };
+        btnSpeed.href = generateUrl(BASE_SPEED);
+        btnRaw.onclick = () => { closeModal(); };
+        btnRaw.href = generateUrl(BASE_RAW);
+      }
+
+      modal.classList.add("active");
+    }
+
+    function closeModal() {
+      modal.classList.remove("active");
+    }
+
+    function closeModalOnBackdrop(e) {
+      if (e.target === modal) {
+        closeModal();
+      }
+    }
+
     const grid = document.getElementById("rules-grid");
 
     modules.forEach(m => {
-      const loonRaw = `${BASE_RAW}/loon/${m.fileKey}.list`;
-      const qxRaw = `${BASE_RAW}/qx/${m.fileKey}.snippet`;
-      const surgeRaw = `${BASE_RAW}/surge/${m.fileKey}.list`;
-      const srRaw = `${BASE_RAW}/shadowrocket/${m.fileKey}.list`;
-      const clashRaw = `${BASE_RAW}/clash/${m.fileKey}.yaml`;
-
-      // NSRingo 风格 URL Scheme
-      const loonScheme = `loon://import?rule=${encodeURIComponent(loonRaw)}&tag=${encodeURIComponent(m.fileKey)}&policy=${m.isDirect ? 'DIRECT' : encodeURIComponent('海外AI')}&enable=true`;
-      const qxScheme = `quantumult-x:///add-resource?remote-resource=${encodeURIComponent(JSON.stringify({filter_remote: [qxRaw]}))}`;
-      const surgeScheme = `surge:///install-rule-set?url=${encodeURIComponent(surgeRaw)}`;
-      const srScheme = `shadowrocket://add/rule?url=${encodeURIComponent(srRaw)}`;
-
       const card = document.createElement("div");
       card.className = "card";
-      // 严格 2 列 x 3 行 布局
-      // 行 1: 🎈 Loon | 🌀 QX
-      // 行 2: 🌊 Surge | 🚀 小火箭
-      // 行 3: 🐱 复制 Clash/通用源 (跨2列通栏或单格)
       card.innerHTML = `
         <div class="card-top">
           <div class="card-header-left">
@@ -464,11 +653,11 @@
         </div>
         <div class="card-desc">${m.desc}</div>
         <div class="btn-actions">
-          <a class="action-btn btn-loon" href="${loonScheme}">🎈 Loon 导入</a>
-          <a class="action-btn btn-qx" href="${qxScheme}">🌀 QX 导入</a>
-          <a class="action-btn btn-surge" href="${surgeScheme}">🌊 Surge 导入</a>
-          <a class="action-btn btn-sr" href="${srScheme}">🚀 小火箭导入</a>
-          <button class="action-btn btn-copy btn-full-row" onclick="copyToClipboard('${clashRaw}')">🐱 复制 Clash / 通用规则源</button>
+          <button class="action-btn btn-loon" onclick="openImportModal('🎈 Loon', '${m.fileKey}', ${m.isDirect}, 'list')">🎈 Loon 导入</button>
+          <button class="action-btn btn-qx" onclick="openImportModal('🌀 QX', '${m.fileKey}', ${m.isDirect}, 'snippet')">🌀 QX 导入</button>
+          <button class="action-btn btn-surge" onclick="openImportModal('🌊 Surge', '${m.fileKey}', ${m.isDirect}, 'list')">🌊 Surge 导入</button>
+          <button class="action-btn btn-sr" onclick="openImportModal('🚀 小火箭', '${m.fileKey}', ${m.isDirect}, 'list')">🚀 小火箭导入</button>
+          <button class="action-btn btn-copy btn-full-row" onclick="openImportModal('🐱 Clash / 通用', '${m.fileKey}', ${m.isDirect}, 'yaml')">🐱 复制 Clash / 通用规则源</button>
         </div>
       `;
       grid.appendChild(card);
