@@ -156,7 +156,7 @@ function main(config, profileName) {
       url: "https://api.openai.com/v1/models",
       interval: 300,
       tolerance: 50,
-      filter: "(?i)^(?!.*(香港|HK|Hong Kong|CN|China|中国|澳门|MO)).*(美|US|USA|日|JP|Japan|新|SG|Singapore|英|UK)"
+      proxies: nonHkProxies.length > 0 ? [...nonHkProxies] : (allProxyNames.length > 0 ? [...allProxyNames] : ["DIRECT"])
     },
     {
       name: "🇨🇳 国产AI",
