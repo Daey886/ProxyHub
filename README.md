@@ -55,8 +55,30 @@ RULE-SET,https://raw.githubusercontent.com/Daey886/proxy-rules/main/surge/AI-Dom
 RULE-SET,https://raw.githubusercontent.com/Daey886/proxy-rules/main/surge/Streaming.list,流媒体
 ```
 
-### 4. Clash / Mihomo (`rule-providers` 节点)
+### 4. Clash / Mihomo (`rule-providers` 与策略组配置)
+
+> **💡 关键提示**：OpenAI、Anthropic Claude、Google Gemini 等海外 AI 平台**严格不支持中国大陆与中国香港 (HK) 节点**访问。建议在策略组中使用正则过滤，自动排除香港节点：
+
 ```yaml
+proxy-groups:
+  # 海外 AI 专属策略组：自动排除香港(HK)、中国(CN)等不支持区域
+  - name: 海外AI
+    type: select
+    proxies:
+      - 自动选择(AI可用区)
+      - 美国节点
+      - 日本节点
+      - 新加坡节点
+      - DIRECT
+
+  # 自动优选（过滤非支持区）
+  - name: 自动选择(AI可用区)
+    type: url-test
+    url: https://api.openai.com/v1/models
+    interval: 300
+    tolerance: 50
+    filter: "(?i)^(?!.*(香港|HK|Hong Kong|CN|China|中国|澳门|MO)).*(美|US|USA|日|JP|Japan|新|SG|Singapore|英|UK)"
+
 rule-providers:
   ai-overseas:
     type: http
