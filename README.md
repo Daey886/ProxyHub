@@ -154,6 +154,11 @@ proxy-groups:
     include-all: true
     filter: "(?i)(英国|UK|United Kingdom|London)"
 
+  - name: 🌐 其他节点
+    type: select
+    include-all: true
+    filter: "(?i)^(?!.*(香港|HK|Hong Kong|HongKong|日本|JP|Japan|Tokyo|Osaka|美国|US|USA|United States|America|新加坡|SG|Singapore|狮城|台湾|TW|Taiwan|Taipei|英国|UK|United Kingdom|London)).*"
+
 # 2. 远程规则集配置 (Rule Providers - 默认走 CDN 镜像加速)
 rule-providers:
   ai-domestic:

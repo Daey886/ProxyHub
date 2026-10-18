@@ -82,10 +82,12 @@ function main(config, profileName) {
   const regionSelectGroups = [];
   const regionAutoGroups = [];
   const regionGroupNames = [];
+  const matchedProxyNames = new Set();
 
   regions.forEach(r => {
     const matched = config.proxies.filter(p => r.reg.test(p.name)).map(p => p.name);
     if (matched.length > 0) {
+      matched.forEach(name => matchedProxyNames.add(name));
       regionGroupNames.push(r.name);
       
       const autoGroupName = `⚡ ${r.name.replace("节点", "自动优选")}`;
@@ -105,6 +107,32 @@ function main(config, profileName) {
       });
     }
   });
+
+  // 兜底：未被上述主流地区匹配到的其他节点 (如加拿大、澳大利亚、土耳其、阿根廷、专线等)
+  const otherProxies = config.proxies
+    .filter(p => !matchedProxyNames.has(p.name))
+    .map(p => p.name);
+
+  if (otherProxies.length > 0) {
+    const otherGroupName = "🌐 其他节点";
+    regionGroupNames.push(otherGroupName);
+
+    const otherAutoName = "⚡ 其他自动优选";
+    regionAutoGroups.push({
+      name: otherAutoName,
+      type: "url-test",
+      url: "https://www.gstatic.com/generate_204",
+      interval: 300,
+      tolerance: 50,
+      proxies: [...otherProxies]
+    });
+
+    regionSelectGroups.push({
+      name: otherGroupName,
+      type: "select",
+      proxies: [otherAutoName, ...otherProxies]
+    });
+  }
 
   // 严格排除 HK / CN 等非支持区，用于海外 AI
   const nonHkProxies = config.proxies
