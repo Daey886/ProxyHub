@@ -473,7 +473,7 @@
       <div class="card-top">
         <div class="card-header-left">
           <div class="icon-box" style="background: rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.3);">⚡</div>
-          <div class="card-title">Clash 全局扩展配置脚本 <span style="font-size: 13px; font-weight: 600; padding: 2px 8px; border-radius: 6px; background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); vertical-align: middle; margin-left: 6px;">v1.1.6</span><br><span style="font-size:14px;font-weight:500;color:var(--text-muted);">(Clash Verge / Mihomo Party 预处理脚本)</span></div>
+          <div class="card-title">Clash 全局扩展配置脚本 <span style="font-size: 13px; font-weight: 600; padding: 2px 8px; border-radius: 6px; background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); vertical-align: middle; margin-left: 6px;">v1.1.7</span><br><span style="font-size:14px;font-weight:500;color:var(--text-muted);">(Clash Verge / Mihomo Party 预处理脚本)</span></div>
         </div>
         <span class="tag-pill tag-proxy">自动增强<br>(EXT SCRIPT)</span>
       </div>
@@ -491,7 +491,7 @@
       </div>
       <div class="btn-actions">
         <button class="action-btn btn-clash" onclick="openScriptModal()">📋 复制扩展脚本内容 / 引入链接</button>
-        <a class="action-btn btn-copy" href="https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@835f68c63c929216831d193a616fbfaaa79d3d0d/clash/extension-script.js" target="_blank">🌐 预览 JS 源码</a>
+        <a class="action-btn btn-copy" href="https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@794e67cca314b3c585c2f44e8cc33c437c3482ab/clash/extension-script.js" target="_blank">🌐 预览 JS 源码</a>
       </div>
     </div>
 
@@ -538,7 +538,7 @@
   <script>
     // GitHub 官方直连 vs 国内 CDN 高速加速镜像
     const BASE_RAW = "https://raw.githubusercontent.com/Daey886/ProxyHub/main";
-    const BASE_SPEED = "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.6";
+    const BASE_SPEED = "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.7";
 
     const modules = [
       {
@@ -679,7 +679,7 @@
 
     function openScriptModal() {
       modalTitle.innerText = "Clash 全局扩展配置脚本";
-      btnSpeed.onclick = () => { copyToClipboard("https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@835f68c63c929216831d193a616fbfaaa79d3d0d/clash/extension-script.js"); closeModal(); };
+      btnSpeed.onclick = () => { copyToClipboard("https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@794e67cca314b3c585c2f44e8cc33c437c3482ab/clash/extension-script.js"); closeModal(); };
       btnSpeed.removeAttribute("href");
       btnRaw.onclick = () => { copyToClipboard("https://raw.githubusercontent.com/Daey886/ProxyHub/main/clash/extension-script.js"); closeModal(); };
       btnRaw.removeAttribute("href");
