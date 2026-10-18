@@ -452,7 +452,7 @@
         <span class="dot"></span>
         NSRingo 协议对齐 · 全平台网络加速直通
       </div>
-      <h1 class="hero-title">高精细度 <span class="highlight">代理分流中心</span></h1>
+      <h1 class="hero-title">ProxyHub <span class="highlight">代理分流中心</span></h1>
       <p class="hero-desc">模块化分流规则集，内置国内 CDN 加速与海外原源双通道，彻底解决国内直连 GitHub 规则拉取失败或超时问题。</p>
       
       <div class="client-chips">
@@ -489,13 +489,13 @@
       </div>
       <div class="btn-actions">
         <button class="action-btn btn-clash" onclick="openScriptModal()">📋 复制扩展脚本内容 / 引入链接</button>
-        <a class="action-btn btn-copy" href="https://testingcf.jsdelivr.net/gh/Daey886/proxy-rules/clash/extension-script.js" target="_blank">🌐 预览 JS 源码</a>
+        <a class="action-btn btn-copy" href="https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub/clash/extension-script.js" target="_blank">🌐 预览 JS 源码</a>
       </div>
     </div>
 
     <footer>
       <p>开源透明 · 无任何隐私外泄 · 零第三方依赖</p>
-      <p>项目托管于 GitHub：<a href="https://github.com/Daey886/proxy-rules" target="_blank">Daey886/proxy-rules</a></p>
+      <p>ProxyHub 官方开源仓库：<a href="https://github.com/Daey886/ProxyHub" target="_blank">Daey886/ProxyHub</a></p>
     </footer>
   </div>
 
@@ -535,8 +535,8 @@
 
   <script>
     // GitHub 官方直连 vs 国内 CDN 高速加速镜像
-    const BASE_RAW = "https://raw.githubusercontent.com/Daey886/proxy-rules/main";
-    const BASE_SPEED = "https://testingcf.jsdelivr.net/gh/Daey886/proxy-rules";
+    const BASE_RAW = "https://raw.githubusercontent.com/Daey886/ProxyHub/main";
+    const BASE_SPEED = "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub";
 
     const modules = [
       {
@@ -677,9 +677,9 @@
 
     function openScriptModal() {
       modalTitle.innerText = "Clash 全局扩展配置脚本";
-      btnSpeed.onclick = () => { copyToClipboard("https://testingcf.jsdelivr.net/gh/Daey886/proxy-rules/clash/extension-script.js"); closeModal(); };
+      btnSpeed.onclick = () => { copyToClipboard("https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub/clash/extension-script.js"); closeModal(); };
       btnSpeed.removeAttribute("href");
-      btnRaw.onclick = () => { copyToClipboard("https://raw.githubusercontent.com/Daey886/proxy-rules/main/clash/extension-script.js"); closeModal(); };
+      btnRaw.onclick = () => { copyToClipboard("https://raw.githubusercontent.com/Daey886/ProxyHub/main/clash/extension-script.js"); closeModal(); };
       btnRaw.removeAttribute("href");
       modal.classList.add("active");
     }

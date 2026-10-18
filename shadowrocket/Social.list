@@ -1,5 +1,5 @@
 # Social Ruleset
-# Source: https://github.com/Daey886/proxy-rules
+# Source: https://github.com/Daey886/ProxyHub
 
 DOMAIN-SUFFIX,telegram.org
 DOMAIN-SUFFIX,t.me

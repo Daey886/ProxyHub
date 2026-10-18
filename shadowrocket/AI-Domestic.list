@@ -1,5 +1,5 @@
 # AI-Domestic Ruleset
-# Source: https://github.com/Daey886/proxy-rules
+# Source: https://github.com/Daey886/ProxyHub
 
 DOMAIN-SUFFIX,deepseek.com
 DOMAIN-SUFFIX,dashscope.aliyuncs.com

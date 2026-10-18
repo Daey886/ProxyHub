@@ -1,5 +1,5 @@
 # Advertising Ruleset
-# Source: https://github.com/Daey886/proxy-rules
+# Source: https://github.com/Daey886/ProxyHub
 
 DOMAIN-SUFFIX,doubleclick.net
 DOMAIN-SUFFIX,googleadservices.com

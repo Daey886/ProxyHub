@@ -1,7 +1,7 @@
 /**
  * Clash Verge / Mihomo Party 全局扩展脚本 (Global Extension Script)
  * 作用：自动注入 2026 最新规则集 (海外AI/国产AI/流媒体等)，并生成包含避开香港(HK)非支持区的专属策略组
- * 项目主页: https://github.com/Daey886/proxy-rules
+ * 项目主页: https://github.com/Daey886/ProxyHub
  */
 
 function main(config, profileName) {
@@ -13,7 +13,7 @@ function main(config, profileName) {
   if (!config["rule-providers"]) config["rule-providers"] = {};
 
   // 2. 注入规则集 Rule-Providers (默认走国内 CDN 加速镜像，直连无阻)
-  const RULE_BASE = "https://testingcf.jsdelivr.net/gh/Daey886/proxy-rules@main/clash";
+  const RULE_BASE = "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@main/clash";
 
   config["rule-providers"]["ai-overseas"] = {
     type: "http",
