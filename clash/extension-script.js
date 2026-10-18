@@ -1,18 +1,18 @@
 /**
  * ProxyHub · Clash Verge / Mihomo Party 全局扩展脚本 (Global Extension Script)
- * 版本号: v1.1.4
+ * 版本号: v1.1.5
  * 作用：
  *  1. 🖐️ 手动选择：直接选择各节点分组（包含各地区节点组、自动优选组，支持开关控制是否显示专线组）
  *  2. 各地区专线独立成组（如：🇭🇰 香港专线、🇯🇵 日本专线、⚡ 专线优选）
  *  3. 专线隔离开关 (BLOCK_IPLC: true 隔离/屏蔽；false 不隔离)
- *  4. 5 大核心业务策略组聚合选择 "🖐️ 手动选择" 与各地区节点组，告别平铺混乱
- *  5. 自动注入全平台广告拦截 (置顶 REJECT) 与海外 AI 智能避障 (避开 HK/国内)
+ *  4. 5 大核心业务策略组聚合选择 "🖐️ 手动选择" 与各地区节点组，纯净结构不平铺底层节点
+ *  5. 自动注入全平台广告拦截 (置顶 REJECT) 与精准分流规则
  * 项目主页: https://github.com/Daey886/ProxyHub
  */
 
 function main(config, profileName) {
   // 当前脚本版本号
-  const SCRIPT_VERSION = "v1.1.4";
+  const SCRIPT_VERSION = "v1.1.5";
 
   // 0. 用户偏好配置项 (可在此微调)
   const SETTINGS = {
@@ -41,7 +41,7 @@ function main(config, profileName) {
   const rawProxies = config.proxies;
 
   // 2. 注入规则集 Rule-Providers (走 ProxyHub 镜像源)
-  const RULE_BASE = "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.4/clash";
+  const RULE_BASE = "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.5/clash";
 
   config["rule-providers"]["ai-overseas"] = {
     type: "http",
@@ -232,12 +232,6 @@ function main(config, profileName) {
     }
   }
 
-  // 严格排除 HK / CN 等非支持区，用于海外 AI
-  const nonHkProxies = rawProxies
-    .filter(p => !/(香港|HK|Hong Kong|CN|China|中国|澳门|MO)/i.test(p.name))
-    .filter(p => SETTINGS.BLOCK_IPLC === true ? !IPLC_REG.test(p.name) : true)
-    .map(p => p.name);
-
   // 所有代理分组合集 (普通组 + 专线组)
   const allRegionGroups = [...normalRegionGroupNames, ...iplcGroupNames];
 
@@ -274,19 +268,10 @@ function main(config, profileName) {
       name: "🤖 海外AI",
       type: "select",
       proxies: [
-        "⚡ AI自动优选(避开HK)",
         "🖐️ 手动选择",
         ...allRegionGroups.filter(n => !n.includes("香港")),
         "DIRECT"
       ]
-    },
-    {
-      name: "⚡ AI自动优选(避开HK)",
-      type: "url-test",
-      url: "https://api.openai.com/v1/models",
-      interval: 300,
-      tolerance: 50,
-      proxies: nonHkProxies.length > 0 ? [...nonHkProxies] : ["DIRECT"]
     },
     {
       name: "🇨🇳 国产AI",
