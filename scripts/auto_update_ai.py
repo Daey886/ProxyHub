@@ -227,8 +227,9 @@ def main():
             )
             with open(readme_path, encoding="utf-8") as f:
                 readme = f.read()
-            # Idempotency: one entry per date and exact generated content.
-            if row not in readme:
+            # Idempotency: one generated entry per UTC date.
+            date_marker = f"| `{today}` | 🤖 **自动同步** |"
+            if date_marker not in readme:
                 marker = "| :--- | :--- | :--- | :--- | :--- |\n"
                 if marker not in readme:
                     raise RuntimeError("README changelog table header not found")
