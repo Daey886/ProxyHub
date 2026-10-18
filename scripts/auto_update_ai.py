@@ -124,9 +124,36 @@ def main():
 
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
-    # 生成规则
+    # 生成规则：合并仓库中已有域名，禁止自动同步删除人工维护内容。
+    def load_existing_domains(name):
+        existing = set()
+        candidates = [
+            ("clash", f"{name}.yaml"), ("loon", f"{name}.list"),
+            ("surge", f"{name}.list"), ("shadowrocket", f"{name}.list"),
+            ("qx", f"{name}.snippet"), ("v2ray", f"{name}.txt"),
+        ]
+        for directory, filename in candidates:
+            path = os.path.join(base_dir, directory, filename)
+            if not os.path.exists(path):
+                continue
+            with open(path, encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    # 支持 DOMAIN-SUFFIX,foo、HOST-SUFFIX,foo、domain:foo 和 Clash +.foo。
+                    if line.startswith("+."):
+                        value = line[2:].strip("'\"")
+                    elif line.startswith(("DOMAIN-SUFFIX,", "HOST-SUFFIX,")):
+                        value = line.split(",", 1)[1].strip()
+                    elif line.startswith("domain:"):
+                        value = line.split(":", 1)[1].strip()
+                    else:
+                        continue
+                    if value and "." in value and not value.startswith("#"):
+                        existing.add(value.lower())
+        return existing
+
     def build_lists(name, domains, is_direct=False):
-        domains = sorted(list(domains))
+        domains = sorted(set(domains) | load_existing_domains(name))
         # 1. Loon / Surge / Shadowrocket
         lines = [f"# {name} Ruleset (Auto-Generated)", f"# Total Domains: {len(domains)}\n"]
         for d in domains:
