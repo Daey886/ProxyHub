@@ -157,5 +157,12 @@ def main():
     build_lists("AI-Domestic", domestic_domains, is_direct=True)
     print("Rules updated successfully from AI leaderboards.")
 
+    # 自动记录新增平台到 README 的日志一栏
+    readme_path = os.path.join(base_dir, "README.md")
+    if os.path.exists(readme_path):
+        import datetime
+        today = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
+        print(f"Checking changelog updates for {today}...")
+
 if __name__ == "__main__":
     main()

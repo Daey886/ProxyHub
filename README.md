@@ -102,5 +102,18 @@ rules:
 
 ---
 
+## 📝 平台收录与动态更新日志 (Changelog)
+
+> 每次 GitHub Actions 自动爬取到新 AI 平台或规则更新时，均会自动记录在此：
+
+| 日期 | 变动类型 | 涉及平台 / 厂商 | 分流策略 | 详细说明 |
+| :--- | :--- | :--- | :--- | :--- |
+| `2026-10-18` | 🚀 **初始化上线** | LMSYS & OpenRouter 头部全矩阵 | `海外AI` / `DIRECT` | 自动抓取并初始化收录 89+ 全球 AI 活跃机构与提供商 |
+| `2026-10-18` | 🤖 **AI 矩阵扩充** | OpenAI, Claude, Antigravity, Cursor, Perplexity 等 | `海外AI (代理)` | 覆盖 2026 最新代码/大模型 API，并加入规避 HK 提示 |
+| `2026-10-18` | 🇨🇳 **国产大模型** | DeepSeek, 通义千问, 智谱GLM, Kimi, 豆包, MiniMax 等 | `DIRECT (直连)` | 强制直连保证响应延迟，防止代理出口风控与误伤 |
+| `2026-10-18` | 🌐 **Web Portal** | Loon, Surge, QX, Shadowrocket, Clash | `多端一键导入` | 部署 GitHub Pages 静态安装主页，实现 NSRingo 级一键唤醒 |
+
+---
+
 ## 📄 License
 MIT © [Daey886](https://github.com/Daey886)

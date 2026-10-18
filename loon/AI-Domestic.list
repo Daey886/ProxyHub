@@ -1,20 +1,40 @@
-# AI-Domestic Ruleset
-# Source: https://github.com/Daey886/proxy-rules
+# AI-Domestic Ruleset (Auto-Generated)
+# Total Domains: 37
 
-DOMAIN-SUFFIX,deepseek.com
-DOMAIN-SUFFIX,dashscope.aliyuncs.com
-DOMAIN-SUFFIX,dashscope.aliyun.com
+DOMAIN-SUFFIX,01.ai
+DOMAIN-SUFFIX,aliyun.com
+DOMAIN-SUFFIX,baai.ac.cn
+DOMAIN-SUFFIX,baichuan-ai.com
+DOMAIN-SUFFIX,baidu.com
+DOMAIN-SUFFIX,baidubce.com
+DOMAIN-SUFFIX,bcebos.com
 DOMAIN-SUFFIX,bigmodel.cn
-DOMAIN-SUFFIX,open.bigmodel.cn
-DOMAIN-SUFFIX,z.ai
-DOMAIN-SUFFIX,moonshot.cn
+DOMAIN-SUFFIX,chatglm.cn
+DOMAIN-SUFFIX,dashscope.aliyuncs.com
+DOMAIN-SUFFIX,deepseek.cn
+DOMAIN-SUFFIX,deepseek.com
+DOMAIN-SUFFIX,doubao.com
+DOMAIN-SUFFIX,hailuoai.com
+DOMAIN-SUFFIX,hunyuan.tencent.com
+DOMAIN-SUFFIX,internlm.org
+DOMAIN-SUFFIX,jieyue.ai
 DOMAIN-SUFFIX,kimi.ai
+DOMAIN-SUFFIX,kimi.com
+DOMAIN-SUFFIX,klingai.cn
+DOMAIN-SUFFIX,lingyiwanwu.com
 DOMAIN-SUFFIX,minimax.chat
 DOMAIN-SUFFIX,minimaxi.com
-DOMAIN-SUFFIX,stepfun.com
-DOMAIN-SUFFIX,baichuan-ai.com
-DOMAIN-SUFFIX,yiyan.baidu.com
-DOMAIN-SUFFIX,lingyiwanwu.com
-DOMAIN-SUFFIX,01.ai
+DOMAIN-SUFFIX,moonshot.cn
+DOMAIN-SUFFIX,open.bigmodel.cn
+DOMAIN-SUFFIX,opencompass.org.cn
+DOMAIN-SUFFIX,qwenlm.ai
+DOMAIN-SUFFIX,sensecore.cn
+DOMAIN-SUFFIX,sensetime.com
 DOMAIN-SUFFIX,siliconflow.cn
-DOMAIN-SUFFIX,doubao.com
+DOMAIN-SUFFIX,siliconflow.com
+DOMAIN-SUFFIX,stepfun.com
+DOMAIN-SUFFIX,tencentmind.com
+DOMAIN-SUFFIX,tongyi.ai
+DOMAIN-SUFFIX,volcengine.com
+DOMAIN-SUFFIX,yiyan.baidu.com
+DOMAIN-SUFFIX,zhipuai.cn
