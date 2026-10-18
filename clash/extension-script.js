@@ -2,10 +2,10 @@
  * ProxyHub · Clash Verge / Mihomo Party 全局扩展脚本 (Global Extension Script)
  * 版本号: v1.1.5
  * 作用：
- *  1. 🖐️ 手动选择：直接选择各节点分组（包含各地区节点组、自动优选组，支持开关控制是否显示专线组）
+ *  1. Proxy：直接选择各节点分组（包含各地区节点组、自动优选组，支持开关控制是否显示专线组）
  *  2. 各地区专线独立成组（如：🇭🇰 香港专线、🇯🇵 日本专线、⚡ 专线优选）
  *  3. 专线隔离开关 (BLOCK_IPLC: true 隔离/屏蔽；false 不隔离)
- *  4. 5 大核心业务策略组聚合选择 "🖐️ 手动选择" 与各地区节点组，纯净结构不平铺底层节点
+ *  4. 5 大核心业务策略组聚合选择 "Proxy" 与各地区节点组，纯净结构不平铺底层节点
  *  5. 自动注入全平台广告拦截 (置顶 REJECT) 与精准分流规则
  * 项目主页: https://github.com/Daey886/ProxyHub
  */
@@ -22,9 +22,9 @@ function main(config, profileName) {
     // "TOTAL_BLOCK": 若设为该值，则彻底从全局所有策略组中剔除专线。
     BLOCK_IPLC: true,
 
-    // 【🖐️ 手动选择策略组开关】：
-    // true (默认): "🖐️ 手动选择" 组中包含各地区专线组与专线优选组；
-    // false: "🖐️ 手动选择" 组中屏蔽所有专线组，仅展示常规地区组与常规优选组。
+    // 【Proxy策略组开关】：
+    // true (默认): "Proxy" 组中包含各地区专线组与专线优选组；
+    // false: "Proxy" 组中屏蔽所有专线组，仅展示常规地区组与常规优选组。
     MANUAL_SHOW_IPLC: true,
   };
 
@@ -235,7 +235,7 @@ function main(config, profileName) {
   // 所有代理分组合集 (普通组 + 专线组)
   const allRegionGroups = [...normalRegionGroupNames, ...iplcGroupNames];
 
-  // 构建 "🖐️ 手动选择" 策略组：直接选择节点组！受 MANUAL_SHOW_IPLC 开关控制是否包含专线组
+  // 构建 "Proxy" 策略组：直接选择节点组！受 MANUAL_SHOW_IPLC 开关控制是否包含专线组
   let manualGroupCandidates = [];
   if (SETTINGS.MANUAL_SHOW_IPLC) {
     // 包含普通组、专线组、普通优选组、专线优选组
@@ -255,7 +255,7 @@ function main(config, profileName) {
     ];
   }
 
-  // 4. 构建策略组结构 (5大核心业务组聚合选择"🖐️ 手动选择"与各地区节点组)
+  // 4. 构建策略组结构 (5大核心业务组聚合选择"Proxy"与各地区节点组)
   const customGroups = [
     // 📦 版本信息：在客户端策略组列表中显示当前扩展脚本版本
     {
@@ -263,9 +263,9 @@ function main(config, profileName) {
       type: "select",
       proxies: ["DIRECT"]
     },
-    // 🖐️ 手动选择：直接选择各个节点组
+    // Proxy：直接选择各个节点组
     {
-      name: "🖐️ 手动选择",
+      name: "Proxy",
       type: "select",
       proxies: manualGroupCandidates.length > 0 ? manualGroupCandidates : ["DIRECT"]
     },
@@ -274,7 +274,7 @@ function main(config, profileName) {
       name: "🤖 海外AI",
       type: "select",
       proxies: [
-        "🖐️ 手动选择",
+        "Proxy",
         ...allRegionGroups.filter(n => !n.includes("香港")),
         "DIRECT"
       ]
@@ -282,22 +282,22 @@ function main(config, profileName) {
     {
       name: "🇨🇳 国产AI",
       type: "select",
-      proxies: ["DIRECT", "🖐️ 手动选择", ...allRegionGroups]
+      proxies: ["DIRECT", "Proxy", ...allRegionGroups]
     },
     {
       name: "🎬 国际流媒体",
       type: "select",
-      proxies: ["🖐️ 手动选择", ...allRegionGroups, "DIRECT"]
+      proxies: ["Proxy", ...allRegionGroups, "DIRECT"]
     },
     {
       name: "💬 社交网络",
       type: "select",
-      proxies: ["🖐️ 手动选择", ...allRegionGroups, "DIRECT"]
+      proxies: ["Proxy", ...allRegionGroups, "DIRECT"]
     },
     {
       name: "💻 开发者服务",
       type: "select",
-      proxies: ["🖐️ 手动选择", ...allRegionGroups, "DIRECT"]
+      proxies: ["Proxy", ...allRegionGroups, "DIRECT"]
     },
     {
       name: "🛑 广告拦截",
