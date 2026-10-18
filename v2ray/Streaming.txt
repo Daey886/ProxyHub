@@ -1,0 +1,14 @@
+# Streaming Ruleset for V2Ray / Xray / v2rayN / v2rayNG
+domain:youtube.com
+domain:googlevideo.com
+domain:ytimg.com
+domain:netflix.com
+domain:netflix.net
+domain:nflxext.com
+domain:nflximg.net
+domain:nflxvideo.net
+domain:spotify.com
+domain:scdn.co
+domain:spoti.fi
+domain:bahamut.com.tw
+domain:gamer.com.tw

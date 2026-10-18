@@ -1,0 +1,11 @@
+# Social Ruleset for V2Ray / Xray / v2rayN / v2rayNG
+domain:telegram.org
+domain:t.me
+domain:telegra.ph
+domain:tdesktop.com
+domain:twitter.com
+domain:x.com
+domain:twimg.com
+domain:discord.com
+domain:discord.gg
+domain:discordapp.com

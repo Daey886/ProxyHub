@@ -153,6 +153,13 @@ def main():
         with open(os.path.join(base_dir, "clash", f"{name}.yaml"), "w") as f:
             f.write("\n".join(payload) + "\n")
 
+        # 4. V2Ray / Xray / v2rayN / v2rayNG
+        v2_lines = [f"# {name} Ruleset for V2Ray / Xray / v2rayN / v2rayNG"]
+        for d in domains:
+            v2_lines.append(f"domain:{d}")
+        with open(os.path.join(base_dir, "v2ray", f"{name}.txt"), "w") as f:
+            f.write("\n".join(v2_lines) + "\n")
+
     build_lists("AI-Overseas", overseas_domains, is_direct=False)
     build_lists("AI-Domestic", domestic_domains, is_direct=True)
     print("Rules updated successfully from AI leaderboards.")

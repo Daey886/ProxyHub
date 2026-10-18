@@ -200,7 +200,7 @@
       margin-bottom: 20px;
     }
 
-    /* Action Buttons - 严格移动端 2 列 3 行布局 */
+    /* Action Buttons - 严格移动端 2 列 x 3 行网格 */
     .btn-actions {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -228,10 +228,6 @@
       box-sizing: border-box;
     }
 
-    .btn-full-row {
-      grid-column: span 2;
-    }
-
     .action-btn:active {
       transform: scale(0.96);
     }
@@ -252,10 +248,13 @@
       background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
       box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
     }
-    .btn-copy {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      color: #e2e8f0;
+    .btn-clash {
+      background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+    }
+    .btn-v2ray {
+      background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+      box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
     }
 
     /* Modal 弹窗样式 */
@@ -462,6 +461,7 @@
         <div class="chip">🌊 Surge</div>
         <div class="chip">🚀 Shadowrocket</div>
         <div class="chip">🐱 Clash / Mihomo</div>
+        <div class="chip">🎯 V2Ray / Xray</div>
       </div>
     </div>
 
@@ -591,6 +591,9 @@
 
       // 构造生成函数
       function generateUrl(baseUrl) {
+        if (clientName.includes("V2Ray")) {
+          return `${baseUrl}/v2ray/${fileKey}.txt`;
+        }
         if (clientName.includes("Clash")) {
           return `${baseUrl}/clash/${fileKey}.yaml`;
         }
@@ -613,7 +616,7 @@
         return baseUrl;
       }
 
-      if (clientName.includes("Clash")) {
+      if (clientName.includes("Clash") || clientName.includes("V2Ray")) {
         btnSpeed.onclick = () => { copyToClipboard(generateUrl(BASE_SPEED)); closeModal(); };
         btnSpeed.removeAttribute("href");
         btnRaw.onclick = () => { copyToClipboard(generateUrl(BASE_RAW)); closeModal(); };
@@ -657,7 +660,8 @@
           <button class="action-btn btn-qx" onclick="openImportModal('🌀 QX', '${m.fileKey}', ${m.isDirect}, 'snippet')">🌀 QX 导入</button>
           <button class="action-btn btn-surge" onclick="openImportModal('🌊 Surge', '${m.fileKey}', ${m.isDirect}, 'list')">🌊 Surge 导入</button>
           <button class="action-btn btn-sr" onclick="openImportModal('🚀 小火箭', '${m.fileKey}', ${m.isDirect}, 'list')">🚀 小火箭导入</button>
-          <button class="action-btn btn-copy btn-full-row" onclick="openImportModal('🐱 Clash / 通用', '${m.fileKey}', ${m.isDirect}, 'yaml')">🐱 复制 Clash / 通用规则源</button>
+          <button class="action-btn btn-clash" onclick="openImportModal('🐱 Clash', '${m.fileKey}', ${m.isDirect}, 'yaml')">🐱 Clash 规则</button>
+          <button class="action-btn btn-v2ray" onclick="openImportModal('🎯 V2Ray', '${m.fileKey}', ${m.isDirect}, 'txt')">🎯 V2Ray 路由</button>
         </div>
       `;
       grid.appendChild(card);

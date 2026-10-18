@@ -28,6 +28,7 @@
 | [`/surge/`](./surge/) | **Surge** | 模块规则集 (`.list`) |
 | [`/shadowrocket/`](./shadowrocket/) | **Shadowrocket** | 规则集 (`.list`) |
 | [`/clash/`](./clash/) | **Clash / Mihomo** | Rule-Provider (`.yaml`) |
+| [`/v2ray/`](./v2ray/) | **V2Ray / Xray / v2rayN / v2rayNG** | 路由域名规则 (`.txt`) |
 | [`/ssr/`](./ssr/) | **SSR / Shadowsocks** | ACL 分流规则 (`proxy.acl`) |
 
 ---
@@ -99,6 +100,12 @@ rules:
   - GEOIP,CN,DIRECT
   - MATCH,兜底策略
 ```
+
+### 5. V2Ray / Xray (v2rayN / v2rayNG / 路由设置)
+
+在 v2rayN **设置 ➔ 路由设置 ➔ 添加规则** 中，可直接粘贴或远程引入该规则文件中的域名：
+- **海外 AI (走代理)**：`https://raw.githubusercontent.com/Daey886/proxy-rules/main/v2ray/AI-Overseas.txt` (国内加速: `https://testingcf.jsdelivr.net/gh/Daey886/proxy-rules@main/v2ray/AI-Overseas.txt`)
+- **国内 AI (直连 direct)**：`https://raw.githubusercontent.com/Daey886/proxy-rules/main/v2ray/AI-Domestic.txt` (国内加速: `https://testingcf.jsdelivr.net/gh/Daey886/proxy-rules@main/v2ray/AI-Domestic.txt`)
 
 ---
 

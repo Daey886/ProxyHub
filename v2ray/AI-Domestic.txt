@@ -1,0 +1,18 @@
+# AI-Domestic Ruleset for V2Ray / Xray / v2rayN / v2rayNG
+domain:deepseek.com
+domain:dashscope.aliyuncs.com
+domain:dashscope.aliyun.com
+domain:bigmodel.cn
+domain:open.bigmodel.cn
+domain:z.ai
+domain:moonshot.cn
+domain:kimi.ai
+domain:minimax.chat
+domain:minimaxi.com
+domain:stepfun.com
+domain:baichuan-ai.com
+domain:yiyan.baidu.com
+domain:lingyiwanwu.com
+domain:01.ai
+domain:siliconflow.cn
+domain:doubao.com

@@ -1,0 +1,7 @@
+# Development Ruleset for V2Ray / Xray / v2rayN / v2rayNG
+domain:github.com
+domain:githubassets.com
+domain:githubusercontent.com
+domain:git-scm.com
+domain:docker.com
+domain:docker.io
