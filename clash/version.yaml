@@ -1,0 +1,3 @@
+proxies:
+  - name: "📌 最新版本：v1.1.8"
+    type: direct
