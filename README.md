@@ -63,48 +63,143 @@ RULE-SET,https://raw.githubusercontent.com/Daey886/proxy-rules/main/surge/Stream
 - **加速引入链接**：`https://testingcf.jsdelivr.net/gh/Daey886/proxy-rules@main/clash/extension-script.js`
 - **GitHub 原生链接**：`https://raw.githubusercontent.com/Daey886/proxy-rules/main/clash/extension-script.js`
 
-#### 方案 B：手动配置 `rule-providers`
-> **💡 关键提示**：OpenAI、Anthropic Claude、Google Gemini 等海外 AI 平台**严格不支持中国大陆与中国香港 (HK) 节点**访问。建议在策略组中使用正则过滤，自动排除香港节点：
+#### 方案 B：手动配置 `config.yaml`（策略组 + 地区正则自动分组模板）
+> **💡 关键提示**：使用 Mihomo / Clash Meta 核心的 `include-all: true` + `filter` 正则功能，手动写配置也**完全不需要手动一个个填节点名**，直接匹配机场节点自动归类进地区：
 
 ```yaml
+# 1. 策略组配置 (Proxy Groups)
 proxy-groups:
-  # 海外 AI 专属策略组：自动排除香港(HK)、中国(CN)等不支持区域
-  - name: 海外AI
+  # --- 业务分流主策略组 ---
+  - name: 🤖 海外AI
     type: select
     proxies:
-      - 自动选择(AI可用区)
-      - 美国节点
-      - 日本节点
-      - 新加坡节点
+      - ⚡ AI自动优选(避开HK)
+      - 🇯🇵 日本节点
+      - 🇺🇸 美国节点
+      - 🇸🇬 新加坡节点
+      - 🇹🇼 台湾节点
+      - 🇬🇧 英国节点
       - DIRECT
 
-  # 自动优选（过滤非支持区）
-  - name: 自动选择(AI可用区)
+  - name: ⚡ AI自动优选(避开HK)
     type: url-test
     url: https://api.openai.com/v1/models
     interval: 300
     tolerance: 50
+    # 严格排除香港/大陆/澳门，只在美/日/新/英等支持地区测速优选
     filter: "(?i)^(?!.*(香港|HK|Hong Kong|CN|China|中国|澳门|MO)).*(美|US|USA|日|JP|Japan|新|SG|Singapore|英|UK)"
 
+  - name: 🇨🇳 国产AI
+    type: select
+    proxies:
+      - DIRECT
+      - 🇭🇰 香港节点
+      - 🇯🇵 日本节点
+      - 🇺🇸 美国节点
+
+  - name: 🎬 国际流媒体
+    type: select
+    proxies:
+      - 🇭🇰 香港节点
+      - 🇹🇼 台湾节点
+      - 🇯🇵 日本节点
+      - 🇸🇬 新加坡节点
+      - 🇺🇸 美国节点
+
+  - name: 💬 社交网络
+    type: select
+    proxies:
+      - 🇭🇰 香港节点
+      - 🇯🇵 日本节点
+      - 🇸🇬 新加坡节点
+      - 🇺🇸 美国节点
+
+  - name: 💻 开发者服务
+    type: select
+    proxies:
+      - 🇭🇰 香港节点
+      - 🇯🇵 日本节点
+      - 🇸🇬 新加坡节点
+      - 🇺🇸 美国节点
+      - DIRECT
+
+  # --- 地区节点自动归类 (基于 Mihomo / Clash 正则动态分组) ---
+  - name: 🇭🇰 香港节点
+    type: select
+    include-all: true
+    filter: "(?i)(香港|HK|Hong Kong|HongKong)"
+
+  - name: 🇯🇵 日本节点
+    type: select
+    include-all: true
+    filter: "(?i)(日本|JP|Japan|Tokyo|Osaka)"
+
+  - name: 🇺🇸 美国节点
+    type: select
+    include-all: true
+    filter: "(?i)(美国|US|USA|United States|America)"
+
+  - name: 🇸🇬 新加坡节点
+    type: select
+    include-all: true
+    filter: "(?i)(新加坡|SG|Singapore|狮城)"
+
+  - name: 🇹🇼 台湾节点
+    type: select
+    include-all: true
+    filter: "(?i)(台湾|TW|Taiwan|Taipei)"
+
+  - name: 🇬🇧 英国节点
+    type: select
+    include-all: true
+    filter: "(?i)(英国|UK|United Kingdom|London)"
+
+# 2. 远程规则集配置 (Rule Providers - 默认走 CDN 镜像加速)
 rule-providers:
-  ai-overseas:
-    type: http
-    behavior: domain
-    url: "https://raw.githubusercontent.com/Daey886/proxy-rules/main/clash/AI-Overseas.yaml"
-    path: ./ruleset/ai-overseas.yaml
-    interval: 86400
   ai-domestic:
     type: http
     behavior: domain
-    url: "https://raw.githubusercontent.com/Daey886/proxy-rules/main/clash/AI-Domestic.yaml"
+    url: "https://testingcf.jsdelivr.net/gh/Daey886/proxy-rules@main/clash/AI-Domestic.yaml"
     path: ./ruleset/ai-domestic.yaml
     interval: 86400
 
+  ai-overseas:
+    type: http
+    behavior: domain
+    url: "https://testingcf.jsdelivr.net/gh/Daey886/proxy-rules@main/clash/AI-Overseas.yaml"
+    path: ./ruleset/ai-overseas.yaml
+    interval: 86400
+
+  streaming:
+    type: http
+    behavior: domain
+    url: "https://testingcf.jsdelivr.net/gh/Daey886/proxy-rules@main/clash/Streaming.yaml"
+    path: ./ruleset/streaming.yaml
+    interval: 86400
+
+  social:
+    type: http
+    behavior: domain
+    url: "https://testingcf.jsdelivr.net/gh/Daey886/proxy-rules@main/clash/Social.yaml"
+    path: ./ruleset/social.yaml
+    interval: 86400
+
+  development:
+    type: http
+    behavior: domain
+    url: "https://testingcf.jsdelivr.net/gh/Daey886/proxy-rules@main/clash/Development.yaml"
+    path: ./ruleset/development.yaml
+    interval: 86400
+
+# 3. 路由规则匹配 (Rules)
 rules:
-  - RULE-SET,ai-overseas,海外AI
-  - RULE-SET,ai-domestic,DIRECT
+  - RULE-SET,ai-domestic,🇨🇳 国产AI
+  - RULE-SET,ai-overseas,🤖 海外AI
+  - RULE-SET,streaming,🎬 国际流媒体
+  - RULE-SET,social,💬 社交网络
+  - RULE-SET,development,💻 开发者服务
   - GEOIP,CN,DIRECT
-  - MATCH,兜底策略
+  - MATCH,🇭🇰 香港节点
 ```
 
 ### 5. V2Ray / Xray (v2rayN / v2rayNG / 路由设置)
