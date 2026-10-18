@@ -1,6 +1,6 @@
 /**
  * ProxyHub · Clash Verge / Mihomo Party 全局扩展脚本 (Global Extension Script)
- * 版本号: v1.1.5
+ * 版本号: v1.1.6
  * 作用：
  *  1. Proxy：直接选择各节点分组（包含各地区节点组、自动优选组，支持开关控制是否显示专线组）
  *  2. 各地区专线独立成组（如：🇭🇰 香港专线、🇯🇵 日本专线、⚡ 专线优选）
@@ -12,7 +12,7 @@
 
 function main(config, profileName) {
   // 当前脚本版本号
-  const SCRIPT_VERSION = "v1.1.5"; // 同步发布版本；会显示在策略组名称中
+  const SCRIPT_VERSION = "v1.1.6"; // 同步发布版本；会显示在策略组名称中
 
   // 0. 用户偏好配置项 (可在此微调)
   const SETTINGS = {
@@ -310,7 +310,10 @@ function main(config, profileName) {
     ...regionAutoGroups
   ];
 
-  config["proxy-groups"] = [...customGroups, ...config["proxy-groups"]];
+  // 移除原订阅中与脚本组同名的策略组，避免 Clash 报 duplicate group name
+  const customGroupNames = new Set(customGroups.map(group => group.name));
+  const existingGroups = config["proxy-groups"].filter(group => !customGroupNames.has(group.name));
+  config["proxy-groups"] = [...customGroups, ...existingGroups];
 
   // 5. 插入分流规则 (置顶匹配)
   const customRules = [
