@@ -12,7 +12,7 @@
 
 function main(config, profileName) {
   // 当前脚本版本号
-  const SCRIPT_VERSION = "v1.1.5";
+  const SCRIPT_VERSION = "v1.1.5"; // 同步发布版本；会显示在策略组名称中
 
   // 0. 用户偏好配置项 (可在此微调)
   const SETTINGS = {
@@ -257,6 +257,12 @@ function main(config, profileName) {
 
   // 4. 构建策略组结构 (5大核心业务组聚合选择"🖐️ 手动选择"与各地区节点组)
   const customGroups = [
+    // 📦 版本信息：在客户端策略组列表中显示当前扩展脚本版本
+    {
+      name: `📦 ProxyHub ${SCRIPT_VERSION}`,
+      type: "select",
+      proxies: ["DIRECT"]
+    },
     // 🖐️ 手动选择：直接选择各个节点组
     {
       name: "🖐️ 手动选择",
