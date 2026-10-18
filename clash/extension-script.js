@@ -1,18 +1,18 @@
 /**
  * ProxyHub · Clash Verge / Mihomo Party 全局扩展脚本 (Global Extension Script)
- * 版本号: v1.1.3
+ * 版本号: v1.1.4
  * 作用：
- *  1. 🖐️ 手动选择 (原 Proxy 组)：收纳所有底层节点，支持独立开关控制是否显示专线节点
+ *  1. 🖐️ 手动选择：直接选择各节点分组（包含各地区节点组、自动优选组，支持开关控制是否显示专线组）
  *  2. 各地区专线独立成组（如：🇭🇰 香港专线、🇯🇵 日本专线、⚡ 专线优选）
  *  3. 专线隔离开关 (BLOCK_IPLC: true 隔离/屏蔽；false 不隔离)
- *  4. 5 大核心业务策略组仅选节点分组与 "🖐️ 手动选择"，告别节点平铺堆叠
+ *  4. 5 大核心业务策略组聚合选择 "🖐️ 手动选择" 与各地区节点组，告别平铺混乱
  *  5. 自动注入全平台广告拦截 (置顶 REJECT) 与海外 AI 智能避障 (避开 HK/国内)
  * 项目主页: https://github.com/Daey886/ProxyHub
  */
 
 function main(config, profileName) {
   // 当前脚本版本号
-  const SCRIPT_VERSION = "v1.1.3";
+  const SCRIPT_VERSION = "v1.1.4";
 
   // 0. 用户偏好配置项 (可在此微调)
   const SETTINGS = {
@@ -23,9 +23,9 @@ function main(config, profileName) {
     BLOCK_IPLC: true,
 
     // 【🖐️ 手动选择策略组开关】：
-    // false (默认): "🖐️ 手动选择" 组中屏蔽专线，仅展示普通节点；
-    // true: "🖐️ 手动选择" 组中显示所有节点（包含专线与普通节点）。
-    PROXY_SHOW_IPLC: false,
+    // true (默认): "🖐️ 手动选择" 组中包含各地区专线组与专线优选组；
+    // false: "🖐️ 手动选择" 组中屏蔽所有专线组，仅展示常规地区组与常规优选组。
+    MANUAL_SHOW_IPLC: true,
   };
 
   // 1. 基础配置健全性校验
@@ -41,7 +41,7 @@ function main(config, profileName) {
   const rawProxies = config.proxies;
 
   // 2. 注入规则集 Rule-Providers (走 ProxyHub 镜像源)
-  const RULE_BASE = "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.3/clash";
+  const RULE_BASE = "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.4/clash";
 
   config["rule-providers"]["ai-overseas"] = {
     type: "http",
@@ -105,8 +105,10 @@ function main(config, profileName) {
 
   const regionSelectGroups = [];
   const regionAutoGroups = [];
-  const regionGroupNames = []; // 普通地区组
-  const iplcGroupNames = [];   // 各地区专线独立组
+  const normalRegionGroupNames = []; // 普通地区组名称
+  const normalRegionAutoNames = [];  // 普通地区优选组名称
+  const iplcGroupNames = [];         // 各地区专线独立组名称
+  const iplcAutoNames = [];          // 各地区专线优选组名称
 
   const matchedProxyNames = new Set();
 
@@ -124,6 +126,7 @@ function main(config, profileName) {
       const iplcGroupName = `${r.icon} ${r.name}专线`;
       const iplcAutoName = `⚡ ${r.name}专线优选`;
       iplcGroupNames.push(iplcGroupName);
+      iplcAutoNames.push(iplcAutoName);
 
       regionAutoGroups.push({
         name: iplcAutoName,
@@ -152,7 +155,8 @@ function main(config, profileName) {
     if (normalProxies.length > 0) {
       const normalGroupName = `${r.icon} ${r.name}节点`;
       const normalAutoName = `⚡ ${r.icon} ${r.name}自动优选`;
-      regionGroupNames.push(normalGroupName);
+      normalRegionGroupNames.push(normalGroupName);
+      normalRegionAutoNames.push(normalAutoName);
 
       regionAutoGroups.push({
         name: normalAutoName,
@@ -185,6 +189,7 @@ function main(config, profileName) {
       const otherIplcGroup = "🌐 其他专线";
       const otherIplcAuto = "⚡ 其他专线优选";
       iplcGroupNames.push(otherIplcGroup);
+      iplcAutoNames.push(otherIplcAuto);
 
       regionAutoGroups.push({
         name: otherIplcAuto,
@@ -207,7 +212,8 @@ function main(config, profileName) {
     if (otherSelected.length > 0) {
       const otherGroupName = "🌐 其他节点";
       const otherAutoName = "⚡ 其他自动优选";
-      regionGroupNames.push(otherGroupName);
+      normalRegionGroupNames.push(otherGroupName);
+      normalRegionAutoNames.push(otherAutoName);
 
       regionAutoGroups.push({
         name: otherAutoName,
@@ -233,36 +239,44 @@ function main(config, profileName) {
     .map(p => p.name);
 
   // 所有代理分组合集 (普通组 + 专线组)
-  const allRegionGroups = [...regionGroupNames, ...iplcGroupNames];
+  const allRegionGroups = [...normalRegionGroupNames, ...iplcGroupNames];
 
-  // 构建 "🖐️ 手动选择" 策略组的节点列表：显示所有底层节点，受 PROXY_SHOW_IPLC 开关控制
-  const manualProxies = rawProxies
-    .filter(p => {
-      if (SETTINGS.PROXY_SHOW_IPLC === false) {
-        return !IPLC_REG.test(p.name); // 屏蔽专线，仅显示常规节点
-      }
-      return true; // 显示所有节点（含专线）
-    })
-    .map(p => p.name);
+  // 构建 "🖐️ 手动选择" 策略组：直接选择节点组！受 MANUAL_SHOW_IPLC 开关控制是否包含专线组
+  let manualGroupCandidates = [];
+  if (SETTINGS.MANUAL_SHOW_IPLC) {
+    // 包含普通组、专线组、普通优选组、专线优选组
+    manualGroupCandidates = [
+      ...normalRegionGroupNames,
+      ...iplcGroupNames,
+      ...normalRegionAutoNames,
+      ...iplcAutoNames,
+      "DIRECT"
+    ];
+  } else {
+    // 屏蔽专线组，仅包含普通地区组和常规优选组
+    manualGroupCandidates = [
+      ...normalRegionGroupNames,
+      ...normalRegionAutoNames,
+      "DIRECT"
+    ];
+  }
 
-  const manualGroupProxies = manualProxies.length > 0 ? manualProxies : (rawProxies.map(p => p.name).length > 0 ? rawProxies.map(p => p.name) : ["DIRECT"]);
-
-  // 4. 构建策略组结构 (5大核心业务组仅选择节点分组与"🖐️ 手动选择"/DIRECT，不再堆叠平铺海量节点)
+  // 4. 构建策略组结构 (5大核心业务组聚合选择"🖐️ 手动选择"与各地区节点组)
   const customGroups = [
-    // 🖐️ 手动选择：平铺底层具体节点，带独立专线显隐开关
+    // 🖐️ 手动选择：直接选择各个节点组
     {
       name: "🖐️ 手动选择",
       type: "select",
-      proxies: [...manualGroupProxies, "DIRECT"]
+      proxies: manualGroupCandidates.length > 0 ? manualGroupCandidates : ["DIRECT"]
     },
-    // 5 大核心业务策略组 (选择各地区分组、专线分组或手动选择)
+    // 5 大核心业务策略组
     {
       name: "🤖 海外AI",
       type: "select",
       proxies: [
         "⚡ AI自动优选(避开HK)",
-        ...allRegionGroups.filter(n => !n.includes("香港")),
         "🖐️ 手动选择",
+        ...allRegionGroups.filter(n => !n.includes("香港")),
         "DIRECT"
       ]
     },
