@@ -208,19 +208,21 @@
       margin-bottom: 22px;
     }
 
-    /* Action Buttons */
+    /* Action Buttons - 严格移动端 2 列 3 行布局 */
     .btn-actions {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
       gap: 10px;
+      width: 100%;
     }
 
     .action-btn {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      padding: 9px 16px;
-      border-radius: 11px;
+      justify-content: center;
+      gap: 6px;
+      padding: 11px 8px;
+      border-radius: 12px;
       font-size: 13px;
       font-weight: 600;
       text-decoration: none;
@@ -228,6 +230,14 @@
       border: none;
       transition: all 0.15s ease;
       color: #ffffff;
+      text-align: center;
+      white-space: nowrap;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .btn-full-row {
+      grid-column: span 2;
     }
 
     .action-btn:active {
@@ -436,6 +446,10 @@
 
       const card = document.createElement("div");
       card.className = "card";
+      // 严格 2 列 x 3 行 布局
+      // 行 1: 🎈 Loon | 🌀 QX
+      // 行 2: 🌊 Surge | 🚀 小火箭
+      // 行 3: 🐱 复制 Clash/通用源 (跨2列通栏或单格)
       card.innerHTML = `
         <div class="card-top">
           <div class="card-header-left">
@@ -446,11 +460,11 @@
         </div>
         <div class="card-desc">${m.desc}</div>
         <div class="btn-actions">
-          <a class="action-btn btn-loon" href="${loonScheme}">🎈 Loon 一键导入</a>
-          <a class="action-btn btn-qx" href="${qxScheme}">🌀 QX 一键导入</a>
-          <a class="action-btn btn-surge" href="${surgeScheme}">🌊 Surge 一键导入</a>
-          <a class="action-btn btn-sr" href="${srScheme}">🚀 小火箭一键导入</a>
-          <button class="action-btn btn-copy" onclick="copyToClipboard('${clashRaw}')">🐱 复制 Clash/通用源</button>
+          <a class="action-btn btn-loon" href="${loonScheme}">🎈 Loon 导入</a>
+          <a class="action-btn btn-qx" href="${qxScheme}">🌀 QX 导入</a>
+          <a class="action-btn btn-surge" href="${surgeScheme}">🌊 Surge 导入</a>
+          <a class="action-btn btn-sr" href="${srScheme}">🚀 小火箭导入</a>
+          <button class="action-btn btn-copy btn-full-row" onclick="copyToClipboard('${clashRaw}')">🐱 复制 Clash / 通用规则源</button>
         </div>
       `;
       grid.appendChild(card);
