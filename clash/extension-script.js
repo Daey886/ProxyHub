@@ -1,6 +1,6 @@
 /**
  * ProxyHub · Clash Verge / Mihomo Party 全局扩展脚本 (Global Extension Script)
- * 版本号: v1.1.7
+ * 版本号: v1.1.8
  * 作用：
  *  1. Proxy：直接选择各节点分组（包含各地区节点组、自动优选组，支持开关控制是否显示专线组）
  *  2. 各地区专线独立成组（如：🇭🇰 香港专线、🇯🇵 日本专线、⚡ 专线优选）
@@ -12,7 +12,7 @@
 
 function main(config, profileName) {
   // 当前脚本版本号
-  const SCRIPT_VERSION = "v1.1.7"; // 同步发布版本；会显示在策略组名称中
+  const SCRIPT_VERSION = "v1.1.8"; // 同步发布版本；会显示在策略组名称中
 
   // 0. 用户偏好配置项 (可在此微调)
   const SETTINGS = {
@@ -32,6 +32,14 @@ function main(config, profileName) {
   if (!config) config = {};
   if (!config.proxies) config.proxies = [];
   if (!config["proxy-groups"]) config["proxy-groups"] = [];
+
+  // 创建仅用于展示版本的虚拟 DIRECT 节点，不承载实际代理流量
+  const versionProxyName = `📌 最新版本：${SCRIPT_VERSION}`;
+  config.proxies = config.proxies.filter(proxy => {
+    const name = proxy && proxy.name;
+    return typeof name !== "string" || !name.startsWith("📌 最新版本：");
+  });
+  config.proxies.unshift({ name: versionProxyName, type: "direct" });
   if (!config.rules) config.rules = [];
   if (!config["rule-providers"]) config["rule-providers"] = {};
 
@@ -259,9 +267,9 @@ function main(config, profileName) {
   const customGroups = [
     // 📦 版本信息：在客户端策略组列表中显示当前扩展脚本版本
     {
-      name: `📌 最新版本：${SCRIPT_VERSION}`,
+      name: "📌 版本信息",
       type: "select",
-      proxies: ["Proxy", "DIRECT"]
+      proxies: [versionProxyName, "DIRECT"]
     },
     // Proxy：直接选择各个节点组
     {
@@ -314,7 +322,7 @@ function main(config, profileName) {
   const customGroupNames = new Set(customGroups.map(group => group.name));
   const existingGroups = config["proxy-groups"].filter(group => {
     // 清理旧版本号组（版本号变化后名称不同），避免重复显示
-    const isOldVersionGroup = typeof group.name === "string" && group.name.startsWith("📌 最新版本：");
+    const isOldVersionGroup = typeof group.name === "string" && (group.name === "📌 版本信息" || group.name.startsWith("📌 最新版本："));
     return !customGroupNames.has(group.name) && !isOldVersionGroup;
   });
   config["proxy-groups"] = [...customGroups, ...existingGroups];
