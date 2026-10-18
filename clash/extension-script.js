@@ -1,26 +1,31 @@
 /**
  * ProxyHub · Clash Verge / Mihomo Party 全局扩展脚本 (Global Extension Script)
- * 版本号: v1.1.2
+ * 版本号: v1.1.3
  * 作用：
- *  1. 各地区专线独立成组（如：🇭🇰 香港专线、🇯🇵 日本专线、⚡ 专线优选）
- *  2. 专线隔离开关 (true: 普通地区组屏蔽专线，避免误跑高倍率；false: 普通组亦包含专线)
- *  3. 5 大核心业务策略组仅选节点分组与 Proxy，告别节点平铺堆叠
- *  4. 顶层聚合 🚀 Proxy 策略组
+ *  1. 🖐️ 手动选择 (原 Proxy 组)：收纳所有底层节点，支持独立开关控制是否显示专线节点
+ *  2. 各地区专线独立成组（如：🇭🇰 香港专线、🇯🇵 日本专线、⚡ 专线优选）
+ *  3. 专线隔离开关 (BLOCK_IPLC: true 隔离/屏蔽；false 不隔离)
+ *  4. 5 大核心业务策略组仅选节点分组与 "🖐️ 手动选择"，告别节点平铺堆叠
  *  5. 自动注入全平台广告拦截 (置顶 REJECT) 与海外 AI 智能避障 (避开 HK/国内)
  * 项目主页: https://github.com/Daey886/ProxyHub
  */
 
 function main(config, profileName) {
   // 当前脚本版本号
-  const SCRIPT_VERSION = "v1.1.2";
+  const SCRIPT_VERSION = "v1.1.3";
 
   // 0. 用户偏好配置项 (可在此微调)
   const SETTINGS = {
-    // 专线隔离与屏蔽开关：
+    // 【地区组专线隔离开关】：
     // true (默认): 各地区专线独立成专线组，普通地区节点组中屏蔽专线，避免日常误走高倍率/高资费；
     // false: 普通地区节点组中亦保留专线；
     // "TOTAL_BLOCK": 若设为该值，则彻底从全局所有策略组中剔除专线。
     BLOCK_IPLC: true,
+
+    // 【🖐️ 手动选择策略组开关】：
+    // false (默认): "🖐️ 手动选择" 组中屏蔽专线，仅展示普通节点；
+    // true: "🖐️ 手动选择" 组中显示所有节点（包含专线与普通节点）。
+    PROXY_SHOW_IPLC: false,
   };
 
   // 1. 基础配置健全性校验
@@ -36,7 +41,7 @@ function main(config, profileName) {
   const rawProxies = config.proxies;
 
   // 2. 注入规则集 Rule-Providers (走 ProxyHub 镜像源)
-  const RULE_BASE = "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub/clash";
+  const RULE_BASE = "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.3/clash";
 
   config["rule-providers"]["ai-overseas"] = {
     type: "http",
@@ -229,31 +234,35 @@ function main(config, profileName) {
 
   // 所有代理分组合集 (普通组 + 专线组)
   const allRegionGroups = [...regionGroupNames, ...iplcGroupNames];
-  const allRegionAutoGroups = regionAutoGroups.map(g => g.name);
 
-  // 全局 Proxy 分组包含的候选组
-  const proxyGroupCandidates = [
-    ...allRegionAutoGroups,
-    ...allRegionGroups,
-    "DIRECT"
-  ];
+  // 构建 "🖐️ 手动选择" 策略组的节点列表：显示所有底层节点，受 PROXY_SHOW_IPLC 开关控制
+  const manualProxies = rawProxies
+    .filter(p => {
+      if (SETTINGS.PROXY_SHOW_IPLC === false) {
+        return !IPLC_REG.test(p.name); // 屏蔽专线，仅显示常规节点
+      }
+      return true; // 显示所有节点（含专线）
+    })
+    .map(p => p.name);
 
-  // 4. 构建策略组结构 (5大核心业务组仅选择节点分组/Proxy/DIRECT，不再堆叠平铺海量节点)
+  const manualGroupProxies = manualProxies.length > 0 ? manualProxies : (rawProxies.map(p => p.name).length > 0 ? rawProxies.map(p => p.name) : ["DIRECT"]);
+
+  // 4. 构建策略组结构 (5大核心业务组仅选择节点分组与"🖐️ 手动选择"/DIRECT，不再堆叠平铺海量节点)
   const customGroups = [
-    // 全局通用 Proxy 分组
+    // 🖐️ 手动选择：平铺底层具体节点，带独立专线显隐开关
     {
-      name: "🚀 Proxy",
+      name: "🖐️ 手动选择",
       type: "select",
-      proxies: proxyGroupCandidates.length > 0 ? proxyGroupCandidates : ["DIRECT"]
+      proxies: [...manualGroupProxies, "DIRECT"]
     },
-    // 5 大核心业务策略组
+    // 5 大核心业务策略组 (选择各地区分组、专线分组或手动选择)
     {
       name: "🤖 海外AI",
       type: "select",
       proxies: [
         "⚡ AI自动优选(避开HK)",
         ...allRegionGroups.filter(n => !n.includes("香港")),
-        "🚀 Proxy",
+        "🖐️ 手动选择",
         "DIRECT"
       ]
     },
@@ -268,22 +277,22 @@ function main(config, profileName) {
     {
       name: "🇨🇳 国产AI",
       type: "select",
-      proxies: ["DIRECT", "🚀 Proxy", ...allRegionGroups]
+      proxies: ["DIRECT", "🖐️ 手动选择", ...allRegionGroups]
     },
     {
       name: "🎬 国际流媒体",
       type: "select",
-      proxies: ["🚀 Proxy", ...allRegionGroups, "DIRECT"]
+      proxies: ["🖐️ 手动选择", ...allRegionGroups, "DIRECT"]
     },
     {
       name: "💬 社交网络",
       type: "select",
-      proxies: ["🚀 Proxy", ...allRegionGroups, "DIRECT"]
+      proxies: ["🖐️ 手动选择", ...allRegionGroups, "DIRECT"]
     },
     {
       name: "💻 开发者服务",
       type: "select",
-      proxies: ["🚀 Proxy", ...allRegionGroups, "DIRECT"]
+      proxies: ["🖐️ 手动选择", ...allRegionGroups, "DIRECT"]
     },
     {
       name: "🛑 广告拦截",

@@ -473,16 +473,16 @@
       <div class="card-top">
         <div class="card-header-left">
           <div class="icon-box" style="background: rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.3);">⚡</div>
-          <div class="card-title">Clash 全局扩展配置脚本 <span style="font-size: 13px; font-weight: 600; padding: 2px 8px; border-radius: 6px; background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); vertical-align: middle; margin-left: 6px;">v1.1.2</span><br><span style="font-size:14px;font-weight:500;color:var(--text-muted);">(Clash Verge / Mihomo Party 预处理脚本)</span></div>
+          <div class="card-title">Clash 全局扩展配置脚本 <span style="font-size: 13px; font-weight: 600; padding: 2px 8px; border-radius: 6px; background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); vertical-align: middle; margin-left: 6px;">v1.1.3</span><br><span style="font-size:14px;font-weight:500;color:var(--text-muted);">(Clash Verge / Mihomo Party 预处理脚本)</span></div>
         </div>
         <span class="tag-pill tag-proxy">自动增强<br>(EXT SCRIPT)</span>
       </div>
       <div class="card-desc">
         适用于 <strong>Clash Verge Rev / Mihomo Party</strong> 的订阅全局扩展（Script）。在软件中一键配置即可全自动：
         <ul style="margin: 8px 0 12px 18px; line-height: 1.6; font-size: 13.5px; color: #cbd5e1;">
-          <li>🛡️ <strong>专线智能屏蔽开关</strong>：默认 <code>BLOCK_IPLC_IEPL: true</code> 自动屏蔽 IPLC/IEPL/专线，可按需一键切换；</li>
-          <li>🚀 <strong>聚合 Proxy 策略组</strong>：新增顶层 <code>🚀 Proxy</code> 分组，统揽各地区组、自动优选及常规节点；</li>
-          <li>🎯 <strong>核心策略纯净分组</strong>：5 大核心业务组（AI/流媒体/社交/开发）<strong>仅选择节点分组与 Proxy</strong>，告别成百上千节点平铺混乱；</li>
+          <li>🖐️ <strong>全局手动选择组</strong>：新增 <code>🖐️ 手动选择</code> 策略组，收纳所有底层节点，支持独立专线显隐开关 <code>PROXY_SHOW_IPLC</code>；</li>
+          <li>🛡️ <strong>专线智能独立分组</strong>：各地区专线独立成组（如 <code>🇭🇰 香港专线</code>），普通地区组默认自动屏蔽专线；</li>
+          <li>🎯 <strong>核心策略纯净分组</strong>：5 大核心业务组（AI/流媒体/社交/开发）<strong>仅选择节点分组与手动选择</strong>，告别成百上千节点平铺混乱；</li>
           <li>🛑 <strong>广告与追踪拦截</strong>：内置各大移动 SDK、追踪探针与开屏广告阻断规则，强制 REJECT 丢弃；</li>
           <li>🌏 <strong>地区节点自动归类</strong>：自动识别香港、日本、美国、新加坡、台湾等地区，未命中节点自动归入 <strong>🌐 其他节点</strong>；</li>
           <li>🤖 <strong>海外 AI 智能避障</strong>：自动排除香港及大陆节点，彻底规避封号风控；</li>
@@ -491,7 +491,7 @@
       </div>
       <div class="btn-actions">
         <button class="action-btn btn-clash" onclick="openScriptModal()">📋 复制扩展脚本内容 / 引入链接</button>
-        <a class="action-btn btn-copy" href="https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.2/clash/extension-script.js" target="_blank">🌐 预览 JS 源码</a>
+        <a class="action-btn btn-copy" href="https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.3/clash/extension-script.js" target="_blank">🌐 预览 JS 源码</a>
       </div>
     </div>
 
@@ -538,7 +538,7 @@
   <script>
     // GitHub 官方直连 vs 国内 CDN 高速加速镜像
     const BASE_RAW = "https://raw.githubusercontent.com/Daey886/ProxyHub/main";
-    const BASE_SPEED = "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.2";
+    const BASE_SPEED = "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.3";
 
     const modules = [
       {
@@ -679,7 +679,7 @@
 
     function openScriptModal() {
       modalTitle.innerText = "Clash 全局扩展配置脚本";
-      btnSpeed.onclick = () => { copyToClipboard("https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.2/clash/extension-script.js"); closeModal(); };
+      btnSpeed.onclick = () => { copyToClipboard("https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.3/clash/extension-script.js"); closeModal(); };
       btnSpeed.removeAttribute("href");
       btnRaw.onclick = () => { copyToClipboard("https://raw.githubusercontent.com/Daey886/ProxyHub/main/clash/extension-script.js"); closeModal(); };
       btnRaw.removeAttribute("href");
