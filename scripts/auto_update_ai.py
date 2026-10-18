@@ -187,16 +187,59 @@ def main():
         with open(os.path.join(base_dir, "v2ray", f"{name}.txt"), "w") as f:
             f.write("\n".join(v2_lines) + "\n")
 
+    # Snapshot the effective rule domain set before writing, so the changelog only
+    # records real additions and does not create a daily no-op entry.
+    before_domains = {
+        "AI-Overseas": load_existing_domains("AI-Overseas"),
+        "AI-Domestic": load_existing_domains("AI-Domestic"),
+    }
     build_lists("AI-Overseas", overseas_domains, is_direct=False)
     build_lists("AI-Domestic", domestic_domains, is_direct=True)
+    after_domains = {
+        "AI-Overseas": set(overseas_domains) | before_domains["AI-Overseas"],
+        "AI-Domestic": set(domestic_domains) | before_domains["AI-Domestic"],
+    }
     print("Rules updated successfully from AI leaderboards.")
 
-    # 自动记录新增平台到 README 的日志一栏
+    # Keep the repository's platform registry and changelog in sync with the
+    # generated rules.  The workflow stages README.md explicitly.
     readme_path = os.path.join(base_dir, "README.md")
     if os.path.exists(readme_path):
-        import datetime
-        today = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
-        print(f"Checking changelog updates for {today}...")
+        from datetime import datetime, timezone
+        new_domains = {
+            name: sorted(after_domains[name] - before_domains[name])
+            for name in after_domains
+        }
+        matched_platforms = sorted({
+            provider
+            for category in PROVIDER_DOMAINS.values()
+            for provider in category
+            if any(provider in org for org in all_active_orgs)
+        })
+        if any(new_domains.values()) or matched_platforms:
+            today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+            platforms = ", ".join(matched_platforms) or "AI leaderboard providers"
+            added = sum(len(values) for values in new_domains.values())
+            row = (
+                f"| `{today}` | 🤖 **自动同步** | {platforms} | "
+                f"`海外AI` / `DIRECT` | 收录 {len(matched_platforms)} 个匹配平台，"
+                f"新增 {added} 个域名，重复域名已去重 |\n"
+            )
+            with open(readme_path, encoding="utf-8") as f:
+                readme = f.read()
+            # Idempotency: one entry per date and exact generated content.
+            if row not in readme:
+                marker = "| :--- | :--- | :--- | :--- | :--- |\n"
+                if marker not in readme:
+                    raise RuntimeError("README changelog table header not found")
+                readme = readme.replace(marker, marker + row, 1)
+                with open(readme_path, "w", encoding="utf-8") as f:
+                    f.write(readme)
+                print(f"Changelog updated: {today}; platforms={len(matched_platforms)}, domains={added}")
+            else:
+                print("Changelog already contains this generated entry.")
+        else:
+            print("No new platforms or domains; changelog unchanged.")
 
 if __name__ == "__main__":
     main()
