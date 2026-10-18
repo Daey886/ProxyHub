@@ -259,9 +259,9 @@ function main(config, profileName) {
   const customGroups = [
     // 📦 版本信息：在客户端策略组列表中显示当前扩展脚本版本
     {
-      name: `📦 ProxyHub ${SCRIPT_VERSION}`,
+      name: `📌 最新版本：${SCRIPT_VERSION}`,
       type: "select",
-      proxies: ["DIRECT"]
+      proxies: ["Proxy", "DIRECT"]
     },
     // Proxy：直接选择各个节点组
     {
