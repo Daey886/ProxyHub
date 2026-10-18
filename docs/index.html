@@ -468,34 +468,6 @@
 
     <div class="grid" id="rules-grid"></div>
 
-    <!-- 地区节点分组说明与配置卡片 -->
-    <div class="card" style="margin-top: 24px; border: 1px solid rgba(16, 185, 129, 0.3); background: rgba(15, 23, 42, 0.85);">
-      <div class="card-top">
-        <div class="card-header-left">
-          <div class="icon-box" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3);">🌏</div>
-          <div class="card-title">地区节点自动分组 (Clash / Mihomo 策略组)<br><span style="font-size:14px;font-weight:500;color:var(--text-muted);">(按国家/地区智能归类，各地区内置专属延迟优选)</span></div>
-        </div>
-        <span class="tag-pill tag-direct">智能分组<br>(REGION GROUPS)</span>
-      </div>
-      <div class="card-desc">
-        无论机场订阅包含多少节点，自动通过正则提取并归集为标准地区分组。海外 AI 策略组默认排除香港/国内，杜绝封号；每个地区均配备毫秒级测速自动优选。
-      </div>
-      <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;">
-        <span class="chip" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.25); color: #6ee7b7;">🇭🇰 香港节点</span>
-        <span class="chip" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.25); color: #6ee7b7;">🇯🇵 日本节点</span>
-        <span class="chip" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.25); color: #6ee7b7;">🇺🇸 美国节点</span>
-        <span class="chip" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.25); color: #6ee7b7;">🇸🇬 新加坡节点</span>
-        <span class="chip" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.25); color: #6ee7b7;">🇹🇼 台湾节点</span>
-        <span class="chip" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.25); color: #6ee7b7;">🇬🇧 英国节点</span>
-        <span class="chip" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.25); color: #6ee7b7;">🇩🇪 德国节点</span>
-        <span class="chip" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.25); color: #6ee7b7;">🇰🇷 韩国节点</span>
-      </div>
-      <div class="btn-actions">
-        <button class="action-btn btn-clash" onclick="openYamlModal()">📋 复制手动配置 YAML 片段</button>
-        <button class="action-btn btn-loon" onclick="openScriptModal()">⚡ 使用扩展脚本自动生成</button>
-      </div>
-    </div>
-
     <!-- Clash 全局扩展脚本推荐卡片 -->
     <div class="card" style="margin-top: 24px; border: 1px solid rgba(99, 102, 241, 0.3); background: rgba(15, 23, 42, 0.85);">
       <div class="card-top">
@@ -506,7 +478,13 @@
         <span class="tag-pill tag-proxy">自动增强<br>(EXT SCRIPT)</span>
       </div>
       <div class="card-desc">
-        适用于 <strong>Clash Verge Rev / Mihomo Party</strong> 的订阅全局扩展（Script）。无需繁琐手动逐个添加规则，在软件中一键应用即可自动注入海外 AI（自动排除非支持区/HK）、国产 AI（强制 DIRECT 直连）、流媒体等完整策略组与规则链。
+        适用于 <strong>Clash Verge Rev / Mihomo Party</strong> 的订阅全局扩展（Script）。在软件中一键配置即可全自动：
+        <ul style="margin: 8px 0 12px 18px; line-height: 1.6; font-size: 13.5px; color: #cbd5e1;">
+          <li>🌏 <strong>地区节点自动分组</strong>：自动识别并生成香港、日本、美国、新加坡、台湾等地区组，且每组内置延迟自动优选；</li>
+          <li>🤖 <strong>海外 AI 智能避障</strong>：自动排除香港及大陆节点，彻底规避封号风控；</li>
+          <li>🇨🇳 <strong>国产 AI 强制直连</strong>：DeepSeek、智谱、Kimi 等直连访问不降速；</li>
+          <li>⚡ <strong>规则集自动注入</strong>：海外/国产AI、流媒体、社交、开发全规则链自动置顶。</li>
+        </ul>
       </div>
       <div class="btn-actions">
         <button class="action-btn btn-clash" onclick="openScriptModal()">📋 复制扩展脚本内容 / 引入链接</button>
@@ -695,61 +673,6 @@
       btnRaw.onclick = () => { copyToClipboard("https://raw.githubusercontent.com/Daey886/proxy-rules/main/clash/extension-script.js"); closeModal(); };
       btnRaw.removeAttribute("href");
       modal.classList.add("active");
-    }
-
-    const MANUAL_YAML = `# Clash Meta / Mihomo 地区节点正则自动归类配置片段
-proxy-groups:
-  - name: 🤖 海外AI
-    type: select
-    proxies:
-      - ⚡ AI自动优选(避开HK)
-      - 🇯🇵 日本节点
-      - 🇺🇸 美国节点
-      - 🇸🇬 新加坡节点
-      - 🇹🇼 台湾节点
-      - 🇬🇧 英国节点
-      - DIRECT
-
-  - name: ⚡ AI自动优选(避开HK)
-    type: url-test
-    url: https://api.openai.com/v1/models
-    interval: 300
-    tolerance: 50
-    filter: "(?i)^(?!.*(香港|HK|Hong Kong|CN|China|中国|澳门|MO)).*(美|US|USA|日|JP|Japan|新|SG|Singapore|英|UK)"
-
-  - name: 🇭🇰 香港节点
-    type: select
-    include-all: true
-    filter: "(?i)(香港|HK|Hong Kong|HongKong)"
-
-  - name: 🇯🇵 日本节点
-    type: select
-    include-all: true
-    filter: "(?i)(日本|JP|Japan|Tokyo|Osaka)"
-
-  - name: 🇺🇸 美国节点
-    type: select
-    include-all: true
-    filter: "(?i)(美国|US|USA|United States|America)"
-
-  - name: 🇸🇬 新加坡节点
-    type: select
-    include-all: true
-    filter: "(?i)(新加坡|SG|Singapore|狮城)"
-
-  - name: 🇹🇼 台湾节点
-    type: select
-    include-all: true
-    filter: "(?i)(台湾|TW|Taiwan|Taipei)"
-
-  - name: 🇬🇧 英国节点
-    type: select
-    include-all: true
-    filter: "(?i)(英国|UK|United Kingdom|London)"`;
-
-    function openYamlModal() {
-      copyToClipboard(MANUAL_YAML);
-      showToast("已成功复制 Clash 地区自动分组 YAML 片段！");
     }
 
     const grid = document.getElementById("rules-grid");
