@@ -55,6 +55,14 @@ function main(config, profileName) {
     interval: 86400
   };
 
+  config["rule-providers"]["advertising"] = {
+    type: "http",
+    behavior: "domain",
+    url: `${RULE_BASE}/Advertising.yaml`,
+    path: "./ruleset/advertising.yaml",
+    interval: 86400
+  };
+
   // 3. 动态提取节点并按国家/地区智能分组
   const allProxyNames = config.proxies.map(p => p.name);
 
@@ -142,6 +150,11 @@ function main(config, profileName) {
       type: "select",
       proxies: ["GLOBAL", ...regionGroupNames, ...allProxyNames, "DIRECT"]
     },
+    {
+      name: "🛑 广告拦截",
+      type: "select",
+      proxies: ["REJECT", "DIRECT"]
+    },
     ...regionSelectGroups,
     ...regionAutoGroups
   ];
@@ -151,6 +164,7 @@ function main(config, profileName) {
 
   // 4. 插入分流规则 (置顶匹配)
   const customRules = [
+    "RULE-SET,advertising,🛑 广告拦截",
     "RULE-SET,ai-domestic,🇨🇳 国产AI",
     "RULE-SET,ai-overseas,🤖 海外AI",
     "RULE-SET,streaming,🎬 国际流媒体",

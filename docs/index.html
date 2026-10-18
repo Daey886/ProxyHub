@@ -480,10 +480,11 @@
       <div class="card-desc">
         适用于 <strong>Clash Verge Rev / Mihomo Party</strong> 的订阅全局扩展（Script）。在软件中一键配置即可全自动：
         <ul style="margin: 8px 0 12px 18px; line-height: 1.6; font-size: 13.5px; color: #cbd5e1;">
+          <li>🛑 <strong>广告拦截自动拦截</strong>：内置各大 SDK、追踪探针与开屏广告阻断规则，强制 REJECT 丢弃；</li>
           <li>🌏 <strong>地区节点自动分组</strong>：自动识别并生成香港、日本、美国、新加坡、台湾等地区组，且每组内置延迟自动优选；</li>
           <li>🤖 <strong>海外 AI 智能避障</strong>：自动排除香港及大陆节点，彻底规避封号风控；</li>
           <li>🇨🇳 <strong>国产 AI 强制直连</strong>：DeepSeek、智谱、Kimi 等直连访问不降速；</li>
-          <li>⚡ <strong>规则集自动注入</strong>：海外/国产AI、流媒体、社交、开发全规则链自动置顶。</li>
+          <li>⚡ <strong>规则集自动注入</strong>：广告、海外/国产AI、流媒体、社交、开发全规则链自动置顶。</li>
         </ul>
       </div>
       <div class="btn-actions">
@@ -577,6 +578,14 @@
         isDirect: false,
         desc: "GitHub、Docker Hub、GitLab 等日常开发与包管理器源加速分流，解决代码拉取超时与构建阻塞。",
         fileKey: "Development"
+      },
+      {
+        icon: "🛑",
+        title: "Advertising<br><span style='font-size:14px;font-weight:500;color:var(--text-muted);'>(全网广告与追踪拦截)</span>",
+        policy: "广告拒连<br>(REJECT)",
+        isDirect: true,
+        desc: "精选 Google Ads、UnityAds、Pangolin (穿山甲)、Mobads 等主流开屏广告、移动推广 SDK 及遥测追踪探针域名，强制丢弃并加速页面加载。",
+        fileKey: "Advertising"
       }
     ];
 
