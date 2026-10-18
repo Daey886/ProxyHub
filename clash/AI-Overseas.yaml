@@ -1,5 +1,6 @@
 # AI-Overseas Rule-Provider for Clash / Mihomo
 payload:
+  - '+.muse.ai'
   - '+.openai.com'
   - '+.chatgpt.com'
   - '+.oaistatic.com'

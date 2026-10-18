@@ -43,3 +43,5 @@ domain:openrouter.ai
 domain:huggingface.co
 domain:router.huggingface.co
 domain:poe.com
+
+domain:muse.ai
