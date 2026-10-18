@@ -1,6 +1,6 @@
 /**
  * ProxyHub · Clash Verge / Mihomo Party 全局扩展脚本 (Global Extension Script)
- * 版本号: v1.1.12
+ * 版本号: v1.1.13
  * 作用：
  *  1. Proxy：直接选择各节点分组（包含各地区节点组、自动优选组，支持开关控制是否显示专线组）
  *  2. 各地区专线独立成组（如：🇭🇰 香港专线、🇯🇵 日本专线、⚡ 专线优选）
@@ -12,7 +12,7 @@
 
 function main(config, profileName) {
   // 当前脚本版本号
-  const SCRIPT_VERSION = "v1.1.12"; // 同步发布版本；会显示在策略组名称中
+  const SCRIPT_VERSION = "v1.1.13"; // 同步发布版本；会显示在策略组名称中
 
   // 0. 用户偏好配置项 (可在此微调)
   const SETTINGS = {
@@ -338,14 +338,9 @@ function main(config, profileName) {
     ...regionAutoGroups
   ];
 
-  // 移除原订阅中与脚本组同名的策略组，避免 Clash 报 duplicate group name
-  const customGroupNames = new Set(customGroups.map(group => group.name));
-  const existingGroups = config["proxy-groups"].filter(group => {
-    // 清理旧版本号组（版本号变化后名称不同），避免重复显示
-    const isOldVersionGroup = typeof group.name === "string" && (group.name === "📌 版本信息" || group.name.startsWith("📌 当前版本：") || group.name.startsWith("📌 最新版本："));
-    return !customGroupNames.has(group.name) && !isOldVersionGroup;
-  });
-  config["proxy-groups"] = [...customGroups, ...existingGroups];
+  // 完全移除用户订阅自带的策略组，只保留 ProxyHub 自动生成的策略组。
+  // 原订阅节点仍保留在 config.proxies 中，供这里的地区组和自动优选组使用。
+  config["proxy-groups"] = customGroups;
 
   // 5. 插入分流规则 (置顶匹配)
   const customRules = [
