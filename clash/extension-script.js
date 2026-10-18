@@ -33,15 +33,18 @@ function main(config, profileName) {
   if (!config.proxies) config.proxies = [];
   if (!config["proxy-groups"]) config["proxy-groups"] = [];
 
-  // 创建仅用于展示版本的虚拟 DIRECT 节点，不承载实际代理流量
-  const versionProxyName = `📌 最新版本：${SCRIPT_VERSION}`;
-  config.proxies = config.proxies.filter(proxy => {
-    const name = proxy && proxy.name;
-    return typeof name !== "string" || !name.startsWith("📌 最新版本：");
-  });
-  config.proxies.unshift({ name: versionProxyName, type: "direct" });
-  if (!config.rules) config.rules = [];
   if (!config["rule-providers"]) config["rule-providers"] = {};
+
+  // 远程版本订阅：刷新订阅后，客户端会重新拉取并显示最新版本虚拟节点
+  const VERSION_PROVIDER = "proxyhub-version";
+  config["proxy-providers"] = config["proxy-providers"] || {};
+  config["proxy-providers"][VERSION_PROVIDER] = {
+    type: "http",
+    url: "https://raw.githubusercontent.com/Daey886/ProxyHub/main/clash/version.yaml",
+    path: "./proxy_providers/proxyhub-version.yaml",
+    interval: 3600,
+    health-check: { enable: false }
+  };
 
   // 专线识别正则 (IPLC / IEPL / 专线 / 广港 / 沪日 / 莞港 / 深港 / 京德 / 广新 等)
   const IPLC_REG = /(IPLC|IEPL|专线|广港|沪日|莞港|深港|京德|广新|中继专线|内网互联)/i;
@@ -269,7 +272,8 @@ function main(config, profileName) {
     {
       name: "📌 版本信息",
       type: "select",
-      proxies: [versionProxyName, "DIRECT"]
+      use: [VERSION_PROVIDER],
+      proxies: ["DIRECT"]
     },
     // Proxy：直接选择各个节点组
     {
