@@ -228,6 +228,28 @@
       box-sizing: border-box;
     }
 
+    .update-notice {
+      position: relative;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      margin: 0 0 24px;
+      padding: 16px 42px 16px 18px;
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.16), rgba(16, 24, 40, 0.78));
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+    }
+    .update-notice-icon { font-size: 24px; line-height: 1.2; }
+    .update-notice-body { min-width: 0; }
+    .update-notice-title { font-size: 16px; font-weight: 700; color: var(--text); }
+    .update-notice-badge { margin-left: 6px; padding: 3px 8px; border-radius: 999px; color: #c4b5fd; background: rgba(124, 58, 237, 0.25); font-size: 12px; }
+    .update-notice-date { margin-top: 4px; color: var(--text-muted); font-size: 12px; }
+    .update-notice-list { margin: 10px 0 0 18px; color: var(--text-muted); font-size: 13px; line-height: 1.75; }
+    .update-notice-list code { color: #c4b5fd; }
+    .update-notice-close { position: absolute; top: 8px; right: 12px; border: 0; background: transparent; color: var(--text-muted); font-size: 24px; line-height: 1; cursor: pointer; }
+    .update-notice-close:hover { color: var(--text); }
+
     .action-btn:active {
       transform: scale(0.96);
     }
@@ -466,6 +488,20 @@
       </div>
     </div>
 
+    <section class="update-notice" id="update-notice" aria-label="网站更新消息">
+      <div class="update-notice-icon">📢</div>
+      <div class="update-notice-body">
+        <div class="update-notice-title">更新消息 <span class="update-notice-badge">v1.1.7</span></div>
+        <div class="update-notice-date">2026-10-18 · Clash / Mihomo 全局扩展脚本</div>
+        <ul class="update-notice-list">
+          <li>新增“📌 最新版本：v1.1.7”策略组，用于显示脚本版本。</li>
+          <li>手动选择策略组统一更名为 <code>Proxy</code>。</li>
+          <li>自动清理重复的 <code>Proxy</code> 和旧版本策略组，避免配置校验失败。</li>
+        </ul>
+      </div>
+      <button class="update-notice-close" type="button" aria-label="关闭更新消息" onclick="dismissUpdateNotice()">×</button>
+    </section>
+
     <div class="grid" id="rules-grid"></div>
 
     <!-- Clash 全局扩展脚本推荐卡片 -->
@@ -684,6 +720,19 @@
       btnRaw.onclick = () => { copyToClipboard("https://raw.githubusercontent.com/Daey886/ProxyHub/main/clash/extension-script.js"); closeModal(); };
       btnRaw.removeAttribute("href");
       modal.classList.add("active");
+    }
+
+    function dismissUpdateNotice() {
+      const notice = document.getElementById("update-notice");
+      if (notice) {
+        notice.remove();
+        localStorage.setItem("proxyhub-dismissed-update", "v1.1.7");
+      }
+    }
+
+    if (localStorage.getItem("proxyhub-dismissed-update") === "v1.1.7") {
+      const notice = document.getElementById("update-notice");
+      if (notice) notice.remove();
     }
 
     const grid = document.getElementById("rules-grid");
