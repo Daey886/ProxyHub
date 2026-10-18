@@ -1,6 +1,6 @@
 /**
  * ProxyHub · Clash Verge / Mihomo Party 全局扩展脚本 (Global Extension Script)
- * 版本号: v1.1.10
+ * 版本号: v1.1.11
  * 作用：
  *  1. Proxy：直接选择各节点分组（包含各地区节点组、自动优选组，支持开关控制是否显示专线组）
  *  2. 各地区专线独立成组（如：🇭🇰 香港专线、🇯🇵 日本专线、⚡ 专线优选）
@@ -12,7 +12,7 @@
 
 function main(config, profileName) {
   // 当前脚本版本号
-  const SCRIPT_VERSION = "v1.1.10"; // 同步发布版本；会显示在策略组名称中
+  const SCRIPT_VERSION = "v1.1.11"; // 同步发布版本；会显示在策略组名称中
 
   // 0. 用户偏好配置项 (可在此微调)
   const SETTINGS = {
@@ -281,6 +281,22 @@ function main(config, profileName) {
       type: "select",
       proxies: manualGroupCandidates.length > 0 ? manualGroupCandidates : ["DIRECT"]
     },
+    // 基础分流策略组
+    {
+      name: "🔒 私有网络",
+      type: "select",
+      proxies: ["DIRECT"]
+    },
+    {
+      name: "🏠 国内直连",
+      type: "select",
+      proxies: ["DIRECT", "Proxy"]
+    },
+    {
+      name: "🐟 漏网之鱼",
+      type: "select",
+      proxies: ["Proxy", "DIRECT"]
+    },
     // 5 大核心业务策略组
     {
       name: "🤖 海外AI",
@@ -294,7 +310,7 @@ function main(config, profileName) {
     {
       name: "🇨🇳 国产AI",
       type: "select",
-      proxies: ["DIRECT", "Proxy", ...allRegionGroups]
+      proxies: ["🏠 国内直连", "DIRECT", "Proxy", ...allRegionGroups]
     },
     {
       name: "🎬 国际流媒体",
@@ -333,12 +349,24 @@ function main(config, profileName) {
 
   // 5. 插入分流规则 (置顶匹配)
   const customRules = [
+    // 私有网络与本机域名优先直连
+    "DOMAIN-SUFFIX,local,🔒 私有网络",
+    "DOMAIN-SUFFIX,lan,🔒 私有网络",
+    "IP-CIDR,10.0.0.0/8,🔒 私有网络,no-resolve",
+    "IP-CIDR,172.16.0.0/12,🔒 私有网络,no-resolve",
+    "IP-CIDR,192.168.0.0/16,🔒 私有网络,no-resolve",
+    "IP-CIDR,127.0.0.0/8,🔒 私有网络,no-resolve",
+    "IP-CIDR,169.254.0.0/16,🔒 私有网络,no-resolve",
+    // 国内 IPv4 与 .cn 域名直连
+    "DOMAIN-SUFFIX,cn,🏠 国内直连",
+    "GEOIP,CN,🏠 国内直连,no-resolve",
     "RULE-SET,advertising,🛑 广告拦截",
     "RULE-SET,ai-domestic,🇨🇳 国产AI",
     "RULE-SET,ai-overseas,🤖 海外AI",
     "RULE-SET,streaming,🎬 国际流媒体",
     "RULE-SET,social,💬 社交网络",
-    "RULE-SET,development,💻 开发者服务"
+    "RULE-SET,development,💻 开发者服务",
+    "MATCH,🐟 漏网之鱼"
   ];
 
   // 删除原订阅自带的全部分流规则，仅保留本扩展脚本定义的规则
