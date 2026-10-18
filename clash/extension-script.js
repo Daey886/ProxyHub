@@ -43,7 +43,7 @@ function main(config, profileName) {
     url: "https://raw.githubusercontent.com/Daey886/ProxyHub/main/clash/version.yaml",
     path: "./proxy_providers/proxyhub-version.yaml",
     interval: 3600,
-    health-check: { enable: false }
+    "health-check": { enable: false }
   };
 
   // 专线识别正则 (IPLC / IEPL / 专线 / 广港 / 沪日 / 莞港 / 深港 / 京德 / 广新 等)
