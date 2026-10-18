@@ -466,6 +466,23 @@
       </div>
     </div>
 
+    <div class="card" style="margin-top: 24px; border: 1px solid rgba(16, 185, 129, 0.35); background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(15, 23, 42, 0.88));">
+      <div class="card-top">
+        <div class="card-header-left">
+          <div class="icon-box" style="background: rgba(16, 185, 129, 0.16); border-color: rgba(16, 185, 129, 0.35);">📦</div>
+          <div class="card-title">最新版本<br><span style="font-size:14px;font-weight:500;color:var(--text-muted);">ProxyHub 当前发布版本</span></div>
+        </div>
+        <span class="tag-pill tag-direct">LATEST</span>
+      </div>
+      <div class="card-desc" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <strong id="latest-version" style="font-size:24px;color:#6ee7b7;">v1.1.5</strong>
+        <span id="latest-version-status" style="color:var(--text-muted);">正在获取最新发布信息…</span>
+      </div>
+      <div class="btn-actions">
+        <a class="action-btn btn-copy" id="latest-release-link" href="https://github.com/Daey886/ProxyHub/releases/tag/v1.1.5" target="_blank" rel="noopener">查看版本详情</a>
+      </div>
+    </div>
+
     <div class="grid" id="rules-grid"></div>
 
     <!-- Clash 全局扩展脚本推荐卡片 -->
@@ -539,6 +556,24 @@
     // GitHub 官方直连 vs 国内 CDN 高速加速镜像
     const BASE_RAW = "https://raw.githubusercontent.com/Daey886/ProxyHub/main";
     const BASE_SPEED = "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.5";
+
+    const latestVersionEl = document.getElementById("latest-version");
+    const latestVersionStatusEl = document.getElementById("latest-version-status");
+    const latestReleaseLinkEl = document.getElementById("latest-release-link");
+
+    fetch("https://api.github.com/repos/Daey886/ProxyHub/releases/latest", {
+      headers: { "Accept": "application/vnd.github+json" }
+    })
+      .then(response => response.ok ? response.json() : Promise.reject(new Error("release lookup failed")))
+      .then(release => {
+        if (!release.tag_name) throw new Error("missing release tag");
+        latestVersionEl.textContent = release.tag_name;
+        latestReleaseLinkEl.href = release.html_url || latestReleaseLinkEl.href;
+        latestVersionStatusEl.textContent = "GitHub Releases 最新发布";
+      })
+      .catch(() => {
+        latestVersionStatusEl.textContent = "当前版本信息";
+      });
 
     const modules = [
       {
