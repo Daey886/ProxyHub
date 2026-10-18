@@ -191,8 +191,16 @@ rule-providers:
     path: ./ruleset/development.yaml
     interval: 86400
 
+  advertising:
+    type: http
+    behavior: domain
+    url: "https://testingcf.jsdelivr.net/gh/Daey886/proxy-rules@main/clash/Advertising.yaml"
+    path: ./ruleset/advertising.yaml
+    interval: 86400
+
 # 3. 路由规则匹配 (Rules)
 rules:
+  - RULE-SET,advertising,REJECT
   - RULE-SET,ai-domestic,🇨🇳 国产AI
   - RULE-SET,ai-overseas,🤖 海外AI
   - RULE-SET,streaming,🎬 国际流媒体
