@@ -1,6 +1,6 @@
 /**
  * ProxyHub · Clash Verge / Mihomo Party 全局扩展脚本 (Global Extension Script)
- * 版本号: v1.1.13
+ * 版本号: v1.1.14
  * 作用：
  *  1. Proxy：直接选择各节点分组（包含各地区节点组、自动优选组，支持开关控制是否显示专线组）
  *  2. 各地区专线独立成组（如：🇭🇰 香港专线、🇯🇵 日本专线、⚡ 专线优选）
@@ -12,7 +12,7 @@
 
 function main(config, profileName) {
   // 当前脚本版本号
-  const SCRIPT_VERSION = "v1.1.13"; // 同步发布版本；会显示在策略组名称中
+  const SCRIPT_VERSION = "v1.1.14"; // 同步发布版本；会显示在策略组名称中
 
   // 0. 用户偏好配置项 (可在此微调)
   const SETTINGS = {
@@ -59,7 +59,7 @@ function main(config, profileName) {
     behavior: "domain",
     url: `${RULE_BASE}/AI-Overseas.yaml`,
     path: "./ruleset/ai-overseas.yaml",
-    interval: 86400
+    interval: 3600
   };
 
   config["rule-providers"]["ai-domestic"] = {
@@ -67,7 +67,7 @@ function main(config, profileName) {
     behavior: "domain",
     url: `${RULE_BASE}/AI-Domestic.yaml`,
     path: "./ruleset/ai-domestic.yaml",
-    interval: 86400
+    interval: 3600
   };
 
   config["rule-providers"]["streaming"] = {
@@ -295,15 +295,24 @@ function main(config, profileName) {
     {
       name: "🐟 漏网之鱼",
       type: "select",
-      proxies: ["Proxy", "DIRECT"]
+      // Unmatched traffic defaults to the US group; HK remains selectable here.
+      proxies: [
+        ...normalRegionGroupNames.filter(n => n.includes("美国")),
+        ...normalRegionGroupNames.filter(n => !n.includes("美国")),
+        ...iplcGroupNames,
+        "DIRECT"
+      ]
     },
     // 5 大核心业务策略组
     {
       name: "🤖 海外AI",
       type: "select",
+      // Clash/Mihomo uses the first selectable proxy as the initial choice.
+      // Prefer the US group, then retain other non-HK choices and fallback.
       proxies: [
-        "Proxy",
-        ...allRegionGroups.filter(n => !n.includes("香港")),
+        ...normalRegionGroupNames.filter(n => n.includes("美国") && !n.includes("香港")),
+        ...normalRegionGroupNames.filter(n => !n.includes("美国") && !n.includes("香港")),
+        ...iplcGroupNames.filter(n => !n.includes("香港")),
         "DIRECT"
       ]
     },
