@@ -104,9 +104,8 @@ DOMAIN_RE = re.compile(r"^(?=.{1,253}$)(?:[a-z0-9_](?:[a-z0-9_-]{0,61}[a-z0-9_])
 #: last label is not in here is almost certainly a truncated entry: parsing
 #: ``DOMAIN-SUFFIX,accounts.google.com`` with a non-anchored extractor yields
 #: ``accounts.google`` -- a "domain" that resolves nowhere.  Google really
-#: owns ``.google``/``.goog`` brand TLDs, so ``antigravity.google`` passes
-#: while the truncated ``accounts.google`` (which must end in ``.com``) is
-#: rejected by the catalogue's own list rather than by this set alone.
+#: owns the ``.google``/``.goog`` brand TLDs, so the brand TLD alone proves
+#: nothing; verified hosts are listed in :data:`BRAND_TLD_HOSTS`.
 KNOWN_TLDS = frozenset(
     {
         "com", "org", "net", "io", "ai", "co", "dev", "app", "cn", "xyz",
@@ -114,6 +113,18 @@ KNOWN_TLDS = frozenset(
         "google", "goog",
     }
 )
+
+#: Hosts under a Google brand TLD that were verified to be live endpoints, so
+#: they must not be mistaken for truncated ``*.com`` entries.  Anything else
+#: under ``.google``/``.goog`` is rejected as a probable truncation.
+#:
+#: * ``antigravity.google``        -> 200, serves its own brand origin.
+#: * ``antigravity-unleash.goog``  -> Antigravity feature-flag host.
+#:
+#: ``gemini.google`` is deliberately *not* listed: it 302-redirects to
+#: ``gemini.google.com``, which every ruleset already ships, so the short host
+#: would only widen matching across the whole ``.google`` TLD for no gain.
+BRAND_TLD_HOSTS = frozenset({"antigravity.google", "antigravity-unleash.goog"})
 
 
 class GenerationError(RuntimeError):
@@ -131,7 +142,7 @@ def plausible_host_errors(domain: str) -> list[str]:
     tld = domain.rsplit(".", 1)[-1]
     if tld not in KNOWN_TLDS:
         errors.append(f"{domain!r} has unregistered-looking TLD {tld!r} (truncated entry?)")
-    if tld in {"google", "goog"} and not domain.startswith(("antigravity",)):
+    elif tld in {"google", "goog"} and domain not in BRAND_TLD_HOSTS:
         errors.append(
             f"{domain!r} ends in Google's brand TLD; the real host is "
             f"{domain}.com -- did the parser truncate it?"

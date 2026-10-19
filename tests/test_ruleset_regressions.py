@@ -13,7 +13,6 @@ Run with the standard library only::
 from __future__ import annotations
 
 import re
-import socket
 import sys
 import tempfile
 import unittest
@@ -55,9 +54,18 @@ class TruncatedHostGuardTests(unittest.TestCase):
         self.assertIn("accounts.google", errors[0])
 
     def test_real_google_brand_tld_host_still_allowed(self):
-        """``antigravity.google`` is a real Google brand-TLD host."""
+        """``antigravity.google`` is a live host under Google's brand TLD."""
         self.assertEqual(aua.plausible_host_errors("antigravity.google"), [])
         self.assertEqual(aua.validate_ruleset("AI-Overseas", {"antigravity.google"}).errors, [])
+        self.assertEqual(aua.plausible_host_errors("antigravity-unleash.goog"), [])
+
+    def test_unverified_brand_tld_host_is_rejected(self):
+        """Only verified brand-TLD hosts pass; others are probable truncations."""
+        self.assertEqual(aua.plausible_host_errors("gemini.google"), [
+            "'gemini.google' ends in Google's brand TLD; the real host is "
+            "gemini.google.com -- did the parser truncate it?"
+        ])
+        self.assertNotEqual(aua.plausible_host_errors("something.google"), [])
 
     def test_truncated_hosts_are_dropped_when_sanitizing(self):
         result = aua.sanitize_domains(set(self.TRUNCATED) | {"accounts.google.com"})
