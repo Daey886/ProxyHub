@@ -30,7 +30,9 @@ jobs:
       - name: Rules security audit
         run: python scripts/rules_audit.py
       - name: Generate change report
-        run: python scripts/rules_change_report.py origin/main > "$RUNNER_TEMP/rules-change-report.md"
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.sha }}
+        run: python scripts/rules_change_report.py "$BASE_SHA" > "$RUNNER_TEMP/rules-change-report.md"
       - name: Upload change report
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:

@@ -10,7 +10,10 @@ RULE_DIRS = ('loon', 'surge', 'shadowrocket', 'qx', 'clash', 'v2ray')
 def main() -> int:
     base = sys.argv[1] if len(sys.argv) > 1 else 'HEAD^'
     cmd = ['git', 'diff', '--unified=0', f'{base}...HEAD', '--', *RULE_DIRS]
-    diff = subprocess.run(cmd, cwd=ROOT, text=True, capture_output=True, check=True).stdout
+    result = subprocess.run(cmd, cwd=ROOT, text=True, capture_output=True)
+    if result.returncode not in (0, 1):
+        raise SystemExit(f'git diff failed: {result.stderr.strip()}')
+    diff = result.stdout
     added = [x[1:] for x in diff.splitlines() if x.startswith('+') and not x.startswith('+++')]
     removed = [x[1:] for x in diff.splitlines() if x.startswith('-') and not x.startswith('---')]
     files = sorted({line[6:] for line in diff.splitlines() if line.startswith('+++ b/')})
