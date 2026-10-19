@@ -1,8 +1,7 @@
 # AI-Overseas Ruleset (Auto-Generated)
-# Total Domains: 67
+# Total Domains: 64
 # Managed by scripts/auto_update_ai.py - manual additions are preserved.
 
-DOMAIN-SUFFIX,accounts.google
 DOMAIN-SUFFIX,accounts.google.com
 DOMAIN-SUFFIX,ai.google.dev
 DOMAIN-SUFFIX,aiplatform.googleapis.com
@@ -31,7 +30,6 @@ DOMAIN-SUFFIX,cursorapi.com
 DOMAIN-SUFFIX,daily-cloudcode-pa.googleapis.com
 DOMAIN-SUFFIX,elevenlabs.io
 DOMAIN-SUFFIX,fireworks.ai
-DOMAIN-SUFFIX,gemini.google
 DOMAIN-SUFFIX,gemini.google.com
 DOMAIN-SUFFIX,generativelanguage.googleapis.com
 DOMAIN-SUFFIX,githubcopilot.com
@@ -51,7 +49,6 @@ DOMAIN-SUFFIX,mistral.ai
 DOMAIN-SUFFIX,muse.ai
 DOMAIN-SUFFIX,oaistatic.com
 DOMAIN-SUFFIX,oaiusercontent.com
-DOMAIN-SUFFIX,oauth2.googleapis
 DOMAIN-SUFFIX,oauth2.googleapis.com
 DOMAIN-SUFFIX,openai.com
 DOMAIN-SUFFIX,openrouter.ai

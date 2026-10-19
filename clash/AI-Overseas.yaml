@@ -1,5 +1,4 @@
 payload:
-  - '+.accounts.google'
   - '+.accounts.google.com'
   - '+.ai.google.dev'
   - '+.aiplatform.googleapis.com'
@@ -28,7 +27,6 @@ payload:
   - '+.daily-cloudcode-pa.googleapis.com'
   - '+.elevenlabs.io'
   - '+.fireworks.ai'
-  - '+.gemini.google'
   - '+.gemini.google.com'
   - '+.generativelanguage.googleapis.com'
   - '+.githubcopilot.com'
@@ -48,7 +46,6 @@ payload:
   - '+.muse.ai'
   - '+.oaistatic.com'
   - '+.oaiusercontent.com'
-  - '+.oauth2.googleapis'
   - '+.oauth2.googleapis.com'
   - '+.openai.com'
   - '+.openrouter.ai'

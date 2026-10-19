@@ -114,6 +114,27 @@ class CatalogueIntegrityTests(unittest.TestCase):
         result = aua.validate_catalog_provenance()
         self.assertEqual(result.errors, [])
 
+    def test_truncated_hosts_are_rejected(self):
+        """A non-anchored parser once wrote ``accounts.google`` into rulesets.
+
+        ``DOMAIN_RE`` accepts any ``label.label``, so truncation must be
+        caught separately; otherwise the broken host ships to every client.
+        """
+        for broken in ("accounts.google", "gemini.google", "oauth2.googleapis"):
+            with self.subTest(broken=broken):
+                self.assertTrue(aua.DOMAIN_RE.match(broken), "regex alone accepts it")
+                self.assertNotEqual(aua.plausible_host_errors(broken), [])
+                errors = aua.validate_ruleset("AI-Overseas", {broken}).errors
+                self.assertEqual(len(errors), 1)
+        # Google's brand TLD is real and must keep working.
+        self.assertEqual(aua.plausible_host_errors("antigravity.google"), [])
+        self.assertEqual(aua.plausible_host_errors("accounts.google.com"), [])
+
+    def test_malformed_hosts_are_dropped_not_shipped(self):
+        result = aua.sanitize_domains({"accounts.google", "accounts.google.com"})
+        self.assertEqual(result.removed_malformed, ["accounts.google"])
+        self.assertEqual(result.kept, {"accounts.google.com"})
+
     def test_no_domain_in_both_routing_classes(self):
         overseas = {d for v in catalog.OVERSEAS_PROVIDERS.values() for d in v}
         domestic = {d for v in catalog.DOMESTIC_PROVIDERS.values() for d in v}
@@ -253,7 +274,10 @@ class RunSafetyTests(unittest.TestCase):
             )
             result = aua.run(repo, offline=True, no_changelog=True, logger=_quiet)
             self.assertEqual(result.exit_code, 0)
-            self.assertIn("googleapis.com", result.report["removed_shared_roots"]["AI-Overseas"])
+            self.assertIn(
+                "googleapis.com",
+                result.report["removed_shared_roots"]["AI-Overseas"]["shared_roots"],
+            )
             self.assertNotIn("googleapis.com", aua.load_existing_domains(repo, "AI-Overseas"))
 
     def test_run_is_idempotent(self):

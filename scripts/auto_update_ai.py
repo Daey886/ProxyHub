@@ -100,9 +100,43 @@ RULESET_HEADER = {
 
 DOMAIN_RE = re.compile(r"^(?=.{1,253}$)(?:[a-z0-9_](?:[a-z0-9_-]{0,61}[a-z0-9_])?\.)+[a-z][a-z0-9-]{0,62}$")
 
+#: TLDs legitimately used by the platforms in this repository.  A host whose
+#: last label is not in here is almost certainly a truncated entry: parsing
+#: ``DOMAIN-SUFFIX,accounts.google.com`` with a non-anchored extractor yields
+#: ``accounts.google`` -- a "domain" that resolves nowhere.  Google really
+#: owns ``.google``/``.goog`` brand TLDs, so ``antigravity.google`` passes
+#: while the truncated ``accounts.google`` (which must end in ``.com``) is
+#: rejected by the catalogue's own list rather than by this set alone.
+KNOWN_TLDS = frozenset(
+    {
+        "com", "org", "net", "io", "ai", "co", "dev", "app", "cn", "xyz",
+        "me", "sh", "chat", "run", "cc", "tv", "info", "tech", "cloud",
+        "google", "goog",
+    }
+)
+
 
 class GenerationError(RuntimeError):
     """Raised when the run must abort without writing anything."""
+
+
+def plausible_host_errors(domain: str) -> list[str]:
+    """Return reasons a host is not a usable public hostname.
+
+    Catches truncation-style typos (``accounts.google`` instead of
+    ``accounts.google.com``) that :data:`DOMAIN_RE` alone accepts, because
+    syntactically any ``label.label`` is a valid domain name.
+    """
+    errors: list[str] = []
+    tld = domain.rsplit(".", 1)[-1]
+    if tld not in KNOWN_TLDS:
+        errors.append(f"{domain!r} has unregistered-looking TLD {tld!r} (truncated entry?)")
+    if tld in {"google", "goog"} and not domain.startswith(("antigravity",)):
+        errors.append(
+            f"{domain!r} ends in Google's brand TLD; the real host is "
+            f"{domain}.com -- did the parser truncate it?"
+        )
+    return errors
 
 
 # ---------------------------------------------------------------------------
@@ -310,6 +344,10 @@ class SanitizeResult:
     kept: set[str] = field(default_factory=set)
     removed_shared_roots: list[str] = field(default_factory=list)
     rejected_guesses: list[str] = field(default_factory=list)
+    #: Hosts dropped because they do not look like a real public hostname
+    #: (truncated entries such as ``accounts.google``).  The catalogue is the
+    #: source of truth for their valid counterparts, so no rule is lost.
+    removed_malformed: list[str] = field(default_factory=list)
     #: Lines that exist in a ruleset but could not be parsed into a domain.
     #: These are *not* silently repairable: dropping them would delete a
     #: hand-maintained rule, so their presence aborts the run.
@@ -345,11 +383,16 @@ def sanitize_domains(domains: set[str]) -> SanitizeResult:
     known over-broad entry from older generated rulesets.  A *sub-domain* of a
     shared root that is not in the audited exception list
     (``lh3.googleusercontent.com``) is an unsupported guess and aborts the run.
+    Malformed hosts that an older parser wrote into the rulesets
+    (``accounts.google``) are dropped as stale artifacts; their valid
+    counterpart is supplied by the catalogue.
     """
     result = SanitizeResult()
     for domain in sorted(domains):
         if is_shared_root_domain(domain):
             result.removed_shared_roots.append(domain)
+        elif plausible_host_errors(domain):
+            result.removed_malformed.append(domain)
         elif is_under_shared_root(domain) and domain not in SHARED_ROOT_EXCEPTIONS:
             result.rejected_guesses.append(domain)
         else:
@@ -364,6 +407,8 @@ def validate_ruleset(name: str, domains: set[str]) -> ValidationResult:
         if not DOMAIN_RE.match(domain):
             result.errors.append(f"{name}: invalid domain {domain!r}")
             continue
+        for message in plausible_host_errors(domain):
+            result.errors.append(f"{name}: {message}")
         # Single source of truth: the catalogue explains why a host is refused.
         violation = shared_root_violation(domain)
         if violation:
@@ -392,6 +437,10 @@ def validate_catalog_provenance() -> ValidationResult:
             for domain in domains:
                 if domain not in OFFICIAL_SOURCES:
                     result.errors.append(f"catalog[{label}][{provider}]: {domain!r} has no OFFICIAL_SOURCES entry")
+                result.errors.extend(
+                    f"catalog[{label}][{provider}]: {message}"
+                    for message in plausible_host_errors(domain)
+                )
     for domain in sorted(OFFICIAL_SOURCES):
         if not DOMAIN_RE.match(domain):
             result.errors.append(f"OFFICIAL_SOURCES: malformed domain {domain!r}")
@@ -619,20 +668,24 @@ def build_plan(
     base_dir: Path,
     overseas_domains: set[str],
     domestic_domains: set[str],
-) -> tuple[dict[str, set[str]], dict[str, list[str]]]:
+) -> tuple[dict[str, set[str]], dict[str, dict[str, list[str]]]]:
     """Curated + every domain already in the repository (never drop manual ones).
 
-    Returns ``(plan, removed)`` where ``removed`` maps each ruleset to the
-    shared-CDN roots that were intentionally dropped.  Manual domains outside
-    shared CDN roots always survive.
+    Returns ``(plan, removed)`` where ``removed`` maps each ruleset to
+    ``{"shared_roots": [...], "malformed": [...]}``, the over-broad roots and
+    stale malformed hosts that were intentionally dropped.  Manual domains
+    outside shared CDN roots always survive.
     """
     plan: dict[str, set[str]] = {}
-    removed: dict[str, list[str]] = {}
+    removed: dict[str, dict[str, list[str]]] = {}
     for name, seeded in (("AI-Overseas", overseas_domains), ("AI-Domestic", domestic_domains)):
         combined = {domain.lower() for domain in seeded} | load_existing_domains(base_dir, name)
         sanitized = sanitize_domains(combined)
         plan[name] = sanitized.kept
-        removed[name] = sanitized.removed_shared_roots
+        removed[name] = {
+            "shared_roots": sorted(sanitized.removed_shared_roots),
+            "malformed": sorted(sanitized.removed_malformed),
+        }
     return plan, removed
 
 

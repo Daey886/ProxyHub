@@ -1,8 +1,7 @@
 # AI-Overseas Ruleset for V2Ray / Xray / v2rayN / v2rayNG
-# Total Domains: 67
+# Total Domains: 64
 # Managed by scripts/auto_update_ai.py - manual additions are preserved.
 
-domain:accounts.google
 domain:accounts.google.com
 domain:ai.google.dev
 domain:aiplatform.googleapis.com
@@ -31,7 +30,6 @@ domain:cursorapi.com
 domain:daily-cloudcode-pa.googleapis.com
 domain:elevenlabs.io
 domain:fireworks.ai
-domain:gemini.google
 domain:gemini.google.com
 domain:generativelanguage.googleapis.com
 domain:githubcopilot.com
@@ -51,7 +49,6 @@ domain:mistral.ai
 domain:muse.ai
 domain:oaistatic.com
 domain:oaiusercontent.com
-domain:oauth2.googleapis
 domain:oauth2.googleapis.com
 domain:openai.com
 domain:openrouter.ai
