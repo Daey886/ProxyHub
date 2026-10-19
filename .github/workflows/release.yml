@@ -1,0 +1,57 @@
+name: Release validation and publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version, for example 1.1.15'
+        required: true
+        type: string
+      confirm:
+        description: 'Type RELEASE to publish the tag and GitHub Release'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ inputs.version }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: inputs.confirm == 'RELEASE'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.11'
+      - name: Validate version and repository
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          test "${GITHUB_REF_NAME:-}" = main
+          grep -q "v${VERSION}" clash/version.yaml
+          python -m unittest discover -s tests -v
+          python scripts/rules_audit.py
+      - name: Create tag and release
+        env:
+          VERSION: ${{ inputs.version }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag="v${VERSION}"
+          git fetch --tags --force
+          if git rev-parse "$tag" >/dev/null 2>&1; then
+            echo "tag already exists: $tag"; exit 1
+          fi
+          git tag -a "$tag" -m "Release $tag"
+          git push origin "$tag"
+          gh release create "$tag" --repo "$GITHUB_REPOSITORY" --title "ProxyHub $tag" --generate-notes

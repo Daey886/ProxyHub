@@ -1,0 +1,33 @@
+name: Scheduled Rules Security Audit
+
+on:
+  schedule:
+    - cron: '30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: scheduled-rules-audit
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Audit generated rules
+        run: python scripts/rules_audit.py
+      - name: Report audit failure
+        if: failure()
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        with:
+          script: |
+            const marker = '<!-- proxyhub-rules-audit -->';
+            const title = '[自动审计] 规则安全审计失败';
+            const issues = await github.paginate(github.rest.issues.listForRepo, {owner: context.repo.owner, repo: context.repo.repo, state: 'open', labels: 'automation'});
+            if (issues.some(i => i.title === title && (i.body || '').includes(marker))) return;
+            await github.rest.issues.create({owner: context.repo.owner, repo: context.repo.repo, title, labels: ['automation'], body: `${marker}\n规则安全审计失败，请查看 [Actions 运行记录](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})。\n\n此 Issue 由自动化创建，不会自动修改生产规则。`});
