@@ -39,6 +39,13 @@
 
 ---
 
+## ⚙️ 自动化工作流
+
+项目中的 GitHub Actions 已覆盖 PR 质量检查、AI 规则同步、规则安全审计、域名官方证据校验、Issue 分流、外部链接检查、GitHub Pages 健康检查和人工确认发布。自动化只会生成候选变更或 Draft PR，不会绕过审核直接修改生产规则。
+
+- 📘 [查看完整自动化工作流说明](./docs/automation-workflows.md)
+- 🛠️ [查看仓库更新手册](./docs/update-guide.md)
+
 ## 🛠 客户端手动配置指南
 
 ### 1. Quantumult X (`[filter_remote]` 节点)
