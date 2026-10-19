@@ -465,10 +465,41 @@
       text-decoration: none;
       font-weight: 500;
     }
+
+    .risk-disclosure {
+      margin: 0 0 24px;
+      padding: 18px 20px;
+      border: 2px solid #f59e0b;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(120, 53, 15, 0.96), rgba(69, 26, 3, 0.96));
+      color: #fffbeb;
+      box-shadow: 0 8px 30px rgba(245, 158, 11, 0.18);
+    }
+
+    .risk-disclosure-title {
+      margin-bottom: 8px;
+      color: #fcd34d;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .risk-disclosure p {
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    .risk-disclosure strong {
+      color: #fde68a;
+    }
   </style>
 </head>
 <body>
   <div class="container">
+    <section class="risk-disclosure" aria-label="重要风险声明">
+      <div class="risk-disclosure-title">⚠️ 重要风险声明：本项目不保证百分之百避免侧漏</div>
+      <p><strong>请先阅读再导入。</strong> ProxyHub 主要依据域名规则分流，无法保证覆盖所有新域名、跨域名调用、共享 CDN、IP 直连、DNS/DoH/DoT、QUIC 或其他连接方式；不同客户端和内核的规则、DNS 行为也可能不同。</p>
+      <p style="margin-top: 8px;">规则更新可能延迟或失败，错误的策略组、DNS、代理或客户端配置可能造成直连、误代理、连接失败或账号/隐私风险。<strong>本项目不是安全、匿名、合规或防封号保证。</strong> 请在目标客户端自行验证；敏感账号、数据和生产环境请采用更严格的隔离与独立验证方案，相关风险由使用者自行评估并承担。</p>
+    </section>
     <div class="hero">
       <div class="badge-pill">
         <span class="dot"></span>
