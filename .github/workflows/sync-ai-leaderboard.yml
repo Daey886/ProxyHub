@@ -12,8 +12,8 @@ name: Sync AI Leaderboards & Auto Update Rules
 #   dynamic values go through `env:` so they cannot inject shell.
 on:
   schedule:
-    # 每天凌晨 04:00 (UTC) 自动执行一次爬取与同步
-    - cron: '0 4 * * *'
+    # 每小时抓取上游并检查/生成规则更新
+    - cron: '0 * * * *'
   workflow_dispatch: # 支持在 GitHub 仓库页面手动一键触发
   pull_request:
     paths:

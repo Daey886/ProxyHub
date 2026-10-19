@@ -37,9 +37,9 @@
 
 ### 1. Quantumult X (`[filter_remote]` 节点)
 ```ini
-https://raw.githubusercontent.com/Daey886/ProxyHub/main/qx/AI-Overseas.snippet, tag=海外AI, force-remote-dns=true, update-interval=86400, opt-parser=false
-https://raw.githubusercontent.com/Daey886/ProxyHub/main/qx/AI-Domestic.snippet, tag=国产AI直连, force-remote-dns=false, update-interval=86400, opt-parser=false
-https://raw.githubusercontent.com/Daey886/ProxyHub/main/qx/Streaming.snippet, tag=流媒体, force-remote-dns=false, update-interval=86400, opt-parser=false
+https://raw.githubusercontent.com/Daey886/ProxyHub/main/qx/AI-Overseas.snippet, tag=海外AI, force-remote-dns=true, update-interval=3600, opt-parser=false
+https://raw.githubusercontent.com/Daey886/ProxyHub/main/qx/AI-Domestic.snippet, tag=国产AI直连, force-remote-dns=false, update-interval=3600, opt-parser=false
+https://raw.githubusercontent.com/Daey886/ProxyHub/main/qx/Streaming.snippet, tag=流媒体, force-remote-dns=false, update-interval=3600, opt-parser=false
 ```
 
 ### 2. Loon (`[Remote Rule]` 节点)
@@ -166,42 +166,42 @@ rule-providers:
     behavior: domain
     url: "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@main/clash/AI-Domestic.yaml"
     path: ./ruleset/ai-domestic.yaml
-    interval: 86400
+    interval: 3600
 
   ai-overseas:
     type: http
     behavior: domain
     url: "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@main/clash/AI-Overseas.yaml"
     path: ./ruleset/ai-overseas.yaml
-    interval: 86400
+    interval: 3600
 
   streaming:
     type: http
     behavior: domain
     url: "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@main/clash/Streaming.yaml"
     path: ./ruleset/streaming.yaml
-    interval: 86400
+    interval: 3600
 
   social:
     type: http
     behavior: domain
     url: "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@main/clash/Social.yaml"
     path: ./ruleset/social.yaml
-    interval: 86400
+    interval: 3600
 
   development:
     type: http
     behavior: domain
     url: "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@main/clash/Development.yaml"
     path: ./ruleset/development.yaml
-    interval: 86400
+    interval: 3600
 
   advertising:
     type: http
     behavior: domain
     url: "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@main/clash/Advertising.yaml"
     path: ./ruleset/advertising.yaml
-    interval: 86400
+    interval: 3600
 
 # 3. 路由规则匹配 (Rules)
 rules:
