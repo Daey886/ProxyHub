@@ -19,7 +19,7 @@
 | `Release validation and publish` | 手动触发 | 校验版本、测试、审计、创建 Git tag 和 GitHub Release | 否；发布前需人工确认 |
 | `pages-build-deployment` | GitHub Pages 平台自动触发 | 发布 `docs/` 网站 | 由 GitHub Pages 管理 |
 
-> Cloudflare AI 审查是辅助意见，不是合并门禁，也不能替代测试、规则审计和人工审核。模型不会修改文件或合并 PR。
+> Cloudflare AI 审查分为两类：人工 PR 只发表评论，不自动合并；`automation/*` 和 `dependabot/*` 的自动维护 PR 在静默 5 分钟后才审查，只有模型明确输出“结论：通过”时才启用 GitHub 受保护自动合并。它仍不能绕过分支保护、必需检查或仓库规则。模型不会修改文件。
 
 启用前，在 GitHub 仓库 **Settings → Secrets and variables → Actions** 添加：
 
