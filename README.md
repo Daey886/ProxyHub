@@ -238,5 +238,39 @@ rules:
 
 ---
 
+## 🔧 规则维护与自动同步 (Maintainer Guide)
+
+规则由 `scripts/auto_update_ai.py` 统一生成，六个客户端（Loon / Surge / Shadowrocket /
+QuantumultX / Clash / V2Ray）共享同一份域名集合，因此不会出现"某端多一条"的漂移。
+
+**域名来源必须可追溯**：`scripts/ai_rules_catalog.py` 中每一个域名都要在
+`OFFICIAL_SOURCES` 里写明官方出处（厂商 API 主机或官方文档）。没有出处的域名不会被生成，
+更不会靠"猜"补一个看着像的域名。
+
+```bash
+python3 scripts/auto_update_ai.py --dry-run     # 只看将要改什么，不落盘
+python3 scripts/auto_update_ai.py --check       # CI 用：规则已过期则退出码 1
+python3 scripts/auto_update_ai.py               # 正式生成
+python3 -m unittest discover -s tests -v        # 测试套件
+```
+
+**安全约束（已由测试覆盖）**
+
+- **抓取失败绝不写文件**：任一官方源不可达时整体中止并返回退出码 `2`，所有规则文件保持原样；
+  若只想在离线环境修复规则，显式加 `--allow-partial-fetch`，此时不会写入 Changelog。
+- **手工域名永不丢失**：生成前会先把仓库中已有域名全部并入，再叠加目录；手写条目只会被保留。
+- **共享 CDN 根域名会被拦截**：`googleapis.com`、`gstatic.com`、`googleusercontent.com`
+  这类后缀会把无关 Google 流量一并代理并导致登录异常，因此只保留经审计的具体主机
+  （如 `generativelanguage.googleapis.com`），未审计的子域名会让整次运行失败而不是被静默写入。
+- **多端一致性校验**：写入后重新解析六种格式，逐条比对域名集合、排序、数量与文件头计数，
+  不一致则自动回滚本次全部改动。
+- **CI 只开 PR 不推主干**：`.github/workflows/sync-ai-leaderboard.yml` 以 `contents: read`
+  运行，改动提交到 `automation/sync-ai-rules` 分支并创建 PR，由人审后合并。
+
+> 修复"海外 AI 被误判直连"这类问题时，请改 `ai_rules_catalog.py` 的分流分类，
+> 而不是手改生成出来的 `.list` / `.yaml` —— 后者会在下次自动同步时被覆盖。
+
+---
+
 ## 📄 License
 MIT © [Daey886](https://github.com/Daey886)

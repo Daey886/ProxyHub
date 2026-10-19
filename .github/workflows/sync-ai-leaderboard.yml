@@ -1,38 +1,145 @@
 name: Sync AI Leaderboards & Auto Update Rules
 
+# Security model
+# -------------
+# * `main` is protected: this workflow never pushes to it.  It opens (or
+#   updates) a pull request from a bot-owned branch instead, so a human
+#   reviews every automated ruleset change.
+# * `contents: read` only.  The push uses a short-lived, PR-scoped
+#   GITHUB_TOKEN via `gh`, so a compromised dependency cannot rewrite tags,
+#   releases or unprotected branches.
+# * No untrusted event payload is interpolated into a `run:` block; all
+#   dynamic values go through `env:` so they cannot inject shell.
 on:
   schedule:
     # 每天凌晨 04:00 (UTC) 自动执行一次爬取与同步
     - cron: '0 4 * * *'
   workflow_dispatch: # 支持在 GitHub 仓库页面手动一键触发
 
+# Never let two sync runs race on the same branch.
+concurrency:
+  group: sync-ai-rules
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   update-rules:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    timeout-minutes: 15
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          # The token is only needed by `gh pr create`; don't leave it in
+          # .git/config where later steps could accidentally reuse it.
+          persist-credentials: false
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Run Leaderboard Scraper & Rule Generator
+      - name: Install test dependencies
         run: |
-          python scripts/auto_update_ai.py
+          python -m pip install --disable-pip-version-check --quiet pyyaml
 
-      - name: Commit and Push Changes
+      - name: Run test suite
+        run: python -m unittest discover -s tests -v
+
+      - name: Run Leaderboard Scraper & Rule Generator
+        # Writes a machine-readable audit artifact and fails the job on fetch
+        # or validation errors instead of half-updating the rulesets.
+        env:
+          AUDIT_REPORT: ${{ runner.temp }}/audit-report.json
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add README.md loon/ surge/ shadowrocket/ qx/ clash/ v2ray/
-          if git diff --staged --quiet; then
+          set -euo pipefail
+          python scripts/auto_update_ai.py --audit-report "$AUDIT_REPORT"
+
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-rules-audit-report
+          path: ${{ runner.temp }}/audit-report.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Detect changes
+        id: changes
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- README.md loon surge shadowrocket qx clash v2ray; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "No changes in AI rulesets."
           else
-            git commit -m "chore(auto): dynamic sync AI leaderboards & new platforms"
-            git push origin main
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            git diff --stat -- README.md loon surge shadowrocket qx clash v2ray
           fi
+
+      - name: Commit to bot branch
+        if: steps.changes.outputs.changed == 'true'
+        env:
+          BRANCH: automation/sync-ai-rules
+        run: |
+          set -euo pipefail
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git checkout -B "$BRANCH"
+          git add -- README.md loon surge shadowrocket qx clash v2ray
+          git commit -m "chore(auto): dynamic sync AI leaderboards & new platforms"
+
+      - name: Push bot branch
+        if: steps.changes.outputs.changed == 'true'
+        env:
+          BRANCH: automation/sync-ai-rules
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          # --force-with-lease is safe here: the branch is bot-owned and is
+          # rebuilt from the default branch on every run.
+          git push --force-with-lease origin "$BRANCH"
+
+      - name: Open or update pull request
+        if: steps.changes.outputs.changed == 'true'
+        env:
+          BRANCH: automation/sync-ai-rules
+          BASE: ${{ github.event.repository.default_branch }}
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          # Never target anything but the repository's default branch.
+          if [[ "$BASE" != "main" ]]; then
+            echo "::warning::default branch is '$BASE'; refusing to open an automatic PR"
+            exit 0
+          fi
+
+          existing="$(gh pr list --repo "$REPO" --head "$BRANCH" --state open --json number --jq '.[0].number')"
+          if [[ -n "$existing" ]]; then
+            echo "Pull request #$existing already open; branch updated in place."
+            exit 0
+          fi
+
+          gh pr create \
+            --repo "$REPO" \
+            --base "$BASE" \
+            --head "$BRANCH" \
+            --title "chore(auto): sync AI leaderboards & ruleset domains" \
+            --body "$(cat <<EOF
+          Automated ruleset sync produced by \`scripts/auto_update_ai.py\`.
+
+          Please review before merging:
+          - [ ] No shared CDN roots (\`googleapis.com\`, \`gstatic.com\`, ...) were introduced
+          - [ ] Client formats are consistent (Loon / Surge / Shadowrocket / QX / Clash / V2Ray)
+          - [ ] Changelog row in \`README.md\` looks correct
+
+          Audit report: \`ai-rules-audit-report\` artifact of [this run]($RUN_URL).
+          EOF
+          )"

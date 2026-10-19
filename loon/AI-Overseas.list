@@ -1,6 +1,8 @@
 # AI-Overseas Ruleset (Auto-Generated)
-# Total Domains: 69
+# Total Domains: 67
+# Managed by scripts/auto_update_ai.py - manual additions are preserved.
 
+DOMAIN-SUFFIX,accounts.google
 DOMAIN-SUFFIX,accounts.google.com
 DOMAIN-SUFFIX,ai.google.dev
 DOMAIN-SUFFIX,aiplatform.googleapis.com
@@ -14,6 +16,7 @@ DOMAIN-SUFFIX,apis.google.com
 DOMAIN-SUFFIX,cerebras.ai
 DOMAIN-SUFFIX,chatgpt.com
 DOMAIN-SUFFIX,claude.ai
+DOMAIN-SUFFIX,claude.com
 DOMAIN-SUFFIX,clients1.google.com
 DOMAIN-SUFFIX,clients2.google.com
 DOMAIN-SUFFIX,clients4.google.com
@@ -21,7 +24,6 @@ DOMAIN-SUFFIX,clients6.google.com
 DOMAIN-SUFFIX,cloudcode-pa.googleapis.com
 DOMAIN-SUFFIX,codestral.mistral.ai
 DOMAIN-SUFFIX,cohere.com
-DOMAIN-SUFFIX,copilot.githubusercontent.com
 DOMAIN-SUFFIX,copilot.microsoft.com
 DOMAIN-SUFFIX,cursor.com
 DOMAIN-SUFFIX,cursor.sh
@@ -29,14 +31,12 @@ DOMAIN-SUFFIX,cursorapi.com
 DOMAIN-SUFFIX,daily-cloudcode-pa.googleapis.com
 DOMAIN-SUFFIX,elevenlabs.io
 DOMAIN-SUFFIX,fireworks.ai
+DOMAIN-SUFFIX,gemini.google
 DOMAIN-SUFFIX,gemini.google.com
 DOMAIN-SUFFIX,generativelanguage.googleapis.com
 DOMAIN-SUFFIX,githubcopilot.com
-DOMAIN-SUFFIX,googleapis.com
-DOMAIN-SUFFIX,googleusercontent.com
 DOMAIN-SUFFIX,grok.com
 DOMAIN-SUFFIX,groq.com
-DOMAIN-SUFFIX,gstatic.com
 DOMAIN-SUFFIX,huggingface.co
 DOMAIN-SUFFIX,ideogram.ai
 DOMAIN-SUFFIX,klingai.com
@@ -51,11 +51,11 @@ DOMAIN-SUFFIX,mistral.ai
 DOMAIN-SUFFIX,muse.ai
 DOMAIN-SUFFIX,oaistatic.com
 DOMAIN-SUFFIX,oaiusercontent.com
+DOMAIN-SUFFIX,oauth2.googleapis
 DOMAIN-SUFFIX,oauth2.googleapis.com
 DOMAIN-SUFFIX,openai.com
 DOMAIN-SUFFIX,openrouter.ai
 DOMAIN-SUFFIX,perplexity.ai
-DOMAIN-SUFFIX,play.googleapis.com
 DOMAIN-SUFFIX,poe.com
 DOMAIN-SUFFIX,replicate.com
 DOMAIN-SUFFIX,router.huggingface.co
@@ -68,5 +68,4 @@ DOMAIN-SUFFIX,together.ai
 DOMAIN-SUFFIX,together.xyz
 DOMAIN-SUFFIX,tokenharbor.ai
 DOMAIN-SUFFIX,voyageai.com
-DOMAIN-SUFFIX,www.googleapis.com
 DOMAIN-SUFFIX,x.ai

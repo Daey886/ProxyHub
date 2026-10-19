@@ -193,7 +193,48 @@ curl -4 -fsSL \
 
 脚本只删除原订阅的策略组和规则，不应删除 `config.proxies`。如果节点确实消失，检查上游订阅内容和客户端生成配置，而不是直接修改清理逻辑。
 
-## 11. 发布检查清单
+## 11. AI 规则自动同步（`scripts/auto_update_ai.py`）
+
+AI 分流规则由 `scripts/auto_update_ai.py` 生成，厂商与域名清单维护在
+`scripts/ai_rules_catalog.py`。工作流 `.github/workflows/sync-ai-leaderboard.yml`
+每天 04:00 (UTC) 运行一次，也可以在 Actions 页面手动触发。
+
+### 安全约束
+
+- 工作流**不会直接 push 到 `main`**。改动会提交到机器人分支
+  `automation/sync-ai-rules`，并以 Pull Request 形式等待人工评审后合并。
+- 工作流权限为 `contents: read` + `pull-requests: write`，`checkout` 不持久化凭据。
+- 抓取失败、校验失败时立即中止（退出码 2 / 3），**不会写入任何文件**，
+  因此不会出现“只更新了一半”的规则集。
+- 写入采用“暂存 + 原子替换 + 失败回滚”，写完后还会跨客户端做一致性校验。
+
+### 共享 CDN 规则
+
+`googleapis.com`、`gstatic.com`、`googleusercontent.com`、`amazonaws.com` 等
+共享根域名**不允许**整段走代理（会误伤无关流量、破坏登录）。只允许具体的服务主机，
+例如 `generativelanguage.googleapis.com`、`lh3.googleusercontent.com`。
+
+允许清单由目录自动推导：某个主机要放行，必须同时满足
+（1）在 `OVERSEAS_PROVIDERS` / `DOMESTIC_PROVIDERS` 中列出，
+（2）在 `OFFICIAL_SOURCES` 中写了来源说明。新增域名请两处一起补。
+
+### 本地命令
+
+```bash
+# 仅审计，不写文件；规则集不是最新时退出码为 1
+python scripts/auto_update_ai.py --check --offline
+
+# 预览将要发生的变更
+python scripts/auto_update_ai.py --dry-run --offline
+
+# 实际生成并写入，同时输出 JSON 审计报告
+python scripts/auto_update_ai.py --audit-report /tmp/audit.json
+
+# 运行测试
+python -m unittest discover -s tests -v
+```
+
+## 12. 发布检查清单
 
 - [ ] `SCRIPT_VERSION` 已更新
 - [ ] `clash/version.yaml` 已同步
