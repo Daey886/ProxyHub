@@ -1,7 +1,7 @@
 ---
 name: 请求新增域名分流规则
 about: 提交需要人工审核的域名分流候选
- title: "[域名分流] "
+title: "[域名分流] "
 labels: "issue:rule,triage"
 ---
 
