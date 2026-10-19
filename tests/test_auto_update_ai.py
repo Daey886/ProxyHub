@@ -491,8 +491,15 @@ class WorkflowSecurityTests(unittest.TestCase):
     def test_permissions_are_least_privilege(self):
         perms = self.data.get("permissions") or {}
         self.assertEqual(perms.get("contents"), "read")
-        self.assertEqual(perms.get("pull-requests"), "write")
-        self.assertNotEqual(perms.get("contents"), "write")
+        self.assertNotIn("pull-requests", perms)
+        self.assertEqual(self.data["jobs"]["validate-pr"].get("permissions", {}), {})
+        update_perms = self.data["jobs"]["update-rules"].get("permissions") or {}
+        self.assertEqual(update_perms.get("contents"), "read")
+        self.assertEqual(update_perms.get("pull-requests"), "write")
+        self.assertNotEqual(update_perms.get("contents"), "write")
+        self.assertEqual(self.data["jobs"]["validate-pr"].get("if"), "github.event_name == 'pull_request'")
+        self.assertEqual(self.data["jobs"]["update-rules"].get("if"), "github.event_name != 'pull_request'")
+        self.assertIn("--offline --check", self.data["jobs"]["validate-pr"]["steps"][-1]["run"])
 
     def test_top_level_permissions_deny_by_default(self):
         perms = self.data.get("permissions") or {}
