@@ -295,11 +295,11 @@ function main(config, profileName) {
     {
       name: "🐟 漏网之鱼",
       type: "select",
-      // Unmatched traffic also defaults to the US group; exclude HK from fallbacks.
+      // Unmatched traffic defaults to the US group; HK remains selectable here.
       proxies: [
-        ...normalRegionGroupNames.filter(n => n.includes("美国") && !n.includes("香港")),
-        ...normalRegionGroupNames.filter(n => !n.includes("美国") && !n.includes("香港")),
-        ...iplcGroupNames.filter(n => !n.includes("香港")),
+        ...normalRegionGroupNames.filter(n => n.includes("美国")),
+        ...normalRegionGroupNames.filter(n => !n.includes("美国")),
+        ...iplcGroupNames,
         "DIRECT"
       ]
     },
