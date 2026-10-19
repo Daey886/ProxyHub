@@ -9,6 +9,7 @@
 | 工作流 | 触发方式 | 自动执行内容 | 是否自动修改 `main` |
 |---|---|---|---|
 | `PR Quality Gate` | PR 创建、更新、重新打开 | 测试、规则新鲜度、安全审计、变更报告、Python/JS/YAML 校验 | 否 |
+| `Cloudflare AI PR Review` | PR 创建、更新、重新打开；也可手动指定 PR | 使用 Cloudflare Workers AI 生成辅助审查评论 | 否 |
 | `Sync AI Leaderboards & Auto Update Rules` | 每小时整点、手动触发 | 抓取 AI 平台、生成各客户端规则、上传审计报告、创建或更新 PR | 否 |
 | `Scheduled Rules Security Audit` | 每小时第 30 分钟、手动触发 | 审计正式规则；失败时创建告警 Issue | 否 |
 | `Build domain candidate PR` | 域名申请 Issue 新建、编辑、重新打开 | 校验官方证据、生成候选规则、创建 Draft PR | 否 |
@@ -17,6 +18,28 @@
 | `Keep GitHub Pages Alive` | 每小时、手动触发 | 检查 Pages；失败时请求 Pages 重建 | 仅请求 Pages 重建 |
 | `Release validation and publish` | 手动触发 | 校验版本、测试、审计、创建 Git tag 和 GitHub Release | 否；发布前需人工确认 |
 | `pages-build-deployment` | GitHub Pages 平台自动触发 | 发布 `docs/` 网站 | 由 GitHub Pages 管理 |
+
+> Cloudflare AI 审查是辅助意见，不是合并门禁，也不能替代测试、规则审计和人工审核。模型不会修改文件或合并 PR。
+
+启用前，在 GitHub 仓库 **Settings → Secrets and variables → Actions** 添加：
+
+- `CLOUDFLARE_ACCOUNT_ID`
+- `CLOUDFLARE_API_TOKEN`：只授予该账户 Workers AI 推理所需的最小权限，不要写入仓库文件或日志。
+
+未配置这两个 Secret 时，工作流会安全跳过，不会失败。工作流不 checkout PR 代码，而是通过 GitHub API 读取 diff；PR 标题和 diff 均作为不可信文本传给模型。模型只发表评论，不获得仓库写入权限。
+
+启用后，Cloudflare Workers AI 默认使用 `@cf/meta/llama-3.1-8b-instruct`。如需更换模型，修改工作流中的 `CF_MODEL`，并先验证账户已启用该模型。
+
+### Cloudflare AI 审查流程
+
+1. PR 创建或更新后触发工作流。
+2. 读取 PR diff，并限制请求大小。
+3. 检查规则安全、Actions 权限、外部输入、凭据泄露、明显逻辑错误和测试缺口。
+4. 调用 Cloudflare Workers AI API。
+5. 将中文审查摘要作为 PR 评论发布。
+6. 维护者结合本地测试、规则审计和人工证据审核决定是否合并。
+
+Cloudflare API 失败、返回空结果或格式异常时，工作流失败并保留原 PR 不变；不会生成代码补丁，也不会自动合并。
 
 ## 自动运行流程
 
