@@ -361,8 +361,10 @@ function main(config, profileName) {
     "IP-CIDR,192.168.0.0/16,🔒 私有网络,no-resolve",
     "IP-CIDR,127.0.0.0/8,🔒 私有网络,no-resolve",
     "IP-CIDR,169.254.0.0/16,🔒 私有网络,no-resolve",
-    // 国内 IPv4 与 .cn 域名直连
+    // 国内 IPv4 与 .cn 域名及国内常用服务直连
     "DOMAIN-SUFFIX,cn,🏠 国内直连",
+    "DOMAIN-SUFFIX,bing.com,🏠 国内直连",
+    "DOMAIN-SUFFIX,bing.net,🏠 国内直连",
     "GEOIP,CN,🏠 国内直连,no-resolve",
     "RULE-SET,advertising,🛑 广告拦截",
     "RULE-SET,ai-domestic,🇨🇳 国产AI",
