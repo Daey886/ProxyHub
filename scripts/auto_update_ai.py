@@ -753,6 +753,11 @@ def run(
     # 2. Plan (curated + manual) ------------------------------------------
     overseas_domains = {d for domains in OVERSEAS_PROVIDERS.values() for d in domains}
     domestic_domains = {d for domains in DOMESTIC_PROVIDERS.values() for d in domains}
+    community_path = base / "scripts" / "community_rules.json"
+    if community_path.exists():
+        community = json.loads(community_path.read_text(encoding="utf-8"))
+        overseas_domains.update(community.get("overseas", []))
+        domestic_domains.update(community.get("domestic", []))
     before = {name: load_existing_domains(base, name) for name in ("AI-Overseas", "AI-Domestic")}
     plan, removed = build_plan(base, overseas_domains, domestic_domains)
     report["removed_shared_roots"] = removed
