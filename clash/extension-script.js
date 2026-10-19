@@ -52,7 +52,7 @@ function main(config, profileName) {
   const rawProxies = config.proxies;
 
   // 2. 注入规则集 Rule-Providers (走 ProxyHub 镜像源)
-  const RULE_BASE = "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.5/clash";
+  const RULE_BASE = "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.14/clash";
 
   config["rule-providers"]["ai-overseas"] = {
     type: "http",

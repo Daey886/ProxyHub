@@ -491,13 +491,14 @@
     <section class="update-notice" id="update-notice" aria-label="网站更新消息">
       <div class="update-notice-icon">📢</div>
       <div class="update-notice-body">
-        <div class="update-notice-title">更新消息 <span class="update-notice-badge">v1.1.13</span></div>
-        <div class="update-notice-date">2026-10-18 · Clash / Mihomo 全局扩展脚本</div>
+        <div class="update-notice-title">更新消息 <span class="update-notice-badge">v1.1.14</span></div>
+        <div class="update-notice-date">2026-10-19 · Clash / Mihomo 全局扩展脚本</div>
         <ul class="update-notice-list">
           <li>策略组显示本地脚本版本，虚拟节点显示服务器远程版本。</li>
           <li>手动选择策略组统一更名为 <code>Proxy</code>。</li>
           <li>新增私有网络、国内直连和漏网之鱼分流。</li>
-          <li>自动清理重复的 <code>Proxy</code> 和旧版本策略组，避免配置校验失败。</li>
+          <li>海外 AI 默认美国节点并排除香港；漏网之鱼默认美国且允许手动选择香港。</li>
+          <li>AI 规则与远程版本提供器每小时刷新。</li>
         </ul>
       </div>
       <button class="update-notice-close" type="button" aria-label="关闭更新消息" onclick="dismissUpdateNotice()">×</button>
@@ -510,7 +511,7 @@
       <div class="card-top">
         <div class="card-header-left">
           <div class="icon-box" style="background: rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.3);">⚡</div>
-          <div class="card-title">Clash 全局扩展配置脚本 <span style="font-size: 13px; font-weight: 600; padding: 2px 8px; border-radius: 6px; background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); vertical-align: middle; margin-left: 6px;">v1.1.13</span><br><span style="font-size:14px;font-weight:500;color:var(--text-muted);">(Clash Verge / Mihomo Party 预处理脚本)</span></div>
+          <div class="card-title">Clash 全局扩展配置脚本 <span style="font-size: 13px; font-weight: 600; padding: 2px 8px; border-radius: 6px; background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); vertical-align: middle; margin-left: 6px;">v1.1.14</span><br><span style="font-size:14px;font-weight:500;color:var(--text-muted);">(Clash Verge / Mihomo Party 预处理脚本)</span></div>
         </div>
         <span class="tag-pill tag-proxy">自动增强<br>(EXT SCRIPT)</span>
       </div>
@@ -528,7 +529,7 @@
       </div>
       <div class="btn-actions">
         <button class="action-btn btn-clash" onclick="openScriptModal()">📋 复制扩展脚本内容 / 引入链接</button>
-        <a class="action-btn btn-copy" href="https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@6efbcd855e8a4e7674b28f74354feffcb86c38c9/clash/extension-script.js" target="_blank">🌐 预览 JS 源码</a>
+        <a class="action-btn btn-copy" href="https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.14/clash/extension-script.js" target="_blank">🌐 预览 JS 源码</a>
       </div>
     </div>
 
@@ -575,7 +576,7 @@
   <script>
     // GitHub 官方直连 vs 国内 CDN 高速加速镜像
     const BASE_RAW = "https://raw.githubusercontent.com/Daey886/ProxyHub/main";
-    const BASE_SPEED = "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.13";
+    const BASE_SPEED = "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.14";
 
     const modules = [
       {
@@ -716,7 +717,7 @@
 
     function openScriptModal() {
       modalTitle.innerText = "Clash 全局扩展配置脚本";
-      btnSpeed.onclick = () => { copyToClipboard("https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@6efbcd855e8a4e7674b28f74354feffcb86c38c9/clash/extension-script.js"); closeModal(); };
+      btnSpeed.onclick = () => { copyToClipboard("https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.14/clash/extension-script.js"); closeModal(); };
       btnSpeed.removeAttribute("href");
       btnRaw.onclick = () => { copyToClipboard("https://raw.githubusercontent.com/Daey886/ProxyHub/main/clash/extension-script.js"); closeModal(); };
       btnRaw.removeAttribute("href");
@@ -727,11 +728,11 @@
       const notice = document.getElementById("update-notice");
       if (notice) {
         notice.remove();
-        localStorage.setItem("proxyhub-dismissed-update", "v1.1.13");
+        localStorage.setItem("proxyhub-dismissed-update", "v1.1.14");
       }
     }
 
-    if (localStorage.getItem("proxyhub-dismissed-update") === "v1.1.13") {
+    if (localStorage.getItem("proxyhub-dismissed-update") === "v1.1.14") {
       const notice = document.getElementById("update-notice");
       if (notice) notice.remove();
     }

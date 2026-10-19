@@ -197,7 +197,7 @@ curl -4 -fsSL \
 
 AI 分流规则由 `scripts/auto_update_ai.py` 生成，厂商与域名清单维护在
 `scripts/ai_rules_catalog.py`。工作流 `.github/workflows/sync-ai-leaderboard.yml`
-每天 04:00 (UTC) 运行一次，也可以在 Actions 页面手动触发。
+每小时运行一次（`0 * * * *`，UTC），也可以在 Actions 页面手动触发。
 
 ### 安全约束
 
