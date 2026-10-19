@@ -22,7 +22,6 @@ concurrency:
 
 env:
   CF_MODEL: "@cf/meta/llama-3.1-8b-instruct"
-  QUIET_PERIOD_SECONDS: "300"
 
 jobs:
   review:
@@ -35,11 +34,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
-      - name: Wait for five minutes of quiet
-        run: |
-          echo "Waiting ${QUIET_PERIOD_SECONDS}s; a new push cancels this run."
-          sleep "$QUIET_PERIOD_SECONDS"
-
       - name: Check Cloudflare configuration
         id: config
         env:

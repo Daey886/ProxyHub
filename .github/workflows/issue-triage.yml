@@ -5,7 +5,7 @@ on:
     types: [opened, reopened]
 
 permissions:
-  contents: read
+  contents: none
   issues: write
 
 concurrency:
@@ -28,7 +28,11 @@ jobs:
               { name: 'issue:link', color: '0e8a16', description: 'Broken, unavailable, or stale link' },
               { name: 'issue:client', color: '5319e7', description: 'Client or platform compatibility issue' },
               { name: 'issue:feature', color: 'a2eeef', description: 'Feature request or improvement' },
-              { name: 'issue:other', color: 'cfd3d7', description: 'Issue requiring manual classification' }
+              { name: 'issue:other', color: 'cfd3d7', description: 'Issue requiring manual classification' },
+              { name: 'needs-info', color: 'fbca04', description: 'Waiting for minimum reproducible information' },
+              { name: 'duplicate', color: 'cfd3d7', description: 'Likely duplicate of an existing issue' },
+              { name: 'spam-suspected', color: 'b60205', description: 'Suspected spam or abusive submission; manual review required' },
+              { name: 'candidate-approved', color: '0e8a16', description: 'Maintainer approved candidate generation' }
             ];
 
             for (const label of labels) {
@@ -48,6 +52,50 @@ jobs:
                   description: label.description
                 });
               }
+            }
+
+            const issueBody = issue.body || '';
+            const urls = issueBody.match(/https?:\/\/\S+/g) || [];
+            const suspicious = issueBody.length > 12000 || urls.length > 8 || /(javascript:|<script|curl\s|wget\s|powershell|base64\s+-d)/i.test(issueBody);
+
+            const recent = await github.paginate(github.rest.issues.listForRepo, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'all',
+              creator: issue.user.login,
+              since: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+              per_page: 100
+            });
+            if (recent.length > 3 || suspicious) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: ['triage', 'spam-suspected']
+              });
+              core.warning(`Rate/content guard: recent=${recent.length}, suspicious=${suspicious}`);
+              return;
+            }
+
+            const openIssues = await github.paginate(github.rest.issues.listForRepo, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              per_page: 100
+            });
+            const domainMatch = issueBody.match(/(?:^|\\n)\\s*域名：?\\s*([^\\s`]+)/i);
+            const domain = domainMatch ? domainMatch[1].toLowerCase().replace(/^https?:\\/\\//, '').replace(/\\/$/, '') : '';
+            const duplicate = domain && openIssues.some(candidate => candidate.number !== issue.number &&
+              !candidate.pull_request && `${candidate.title}\\n${candidate.body || ''}`.toLowerCase().includes(domain));
+            if (duplicate) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: ['triage', 'duplicate']
+              });
+              core.info(`Possible duplicate for domain ${domain}; no candidate action.`);
+              return;
             }
 
             const rules = [
@@ -79,16 +127,15 @@ jobs:
             }
 
             const body = `${marker}
-            感谢提交 Issue，已自动加入待处理队列并标记为 **${category}**。
+            已收到域名规则申请，当前标记为 **${category}**，等待维护者核验。
 
-            为便于维护者复现，请补充以下信息（如适用）：
-            - 使用的客户端及版本（例如 Clash/Mihomo、Loon、Surge 等）
-            - 使用的规则或脚本链接，以及导入时间
-            - 具体域名、URL 或脱敏后的配置片段
-            - 实际现象、预期行为和客户端日志
-            - 网络环境（IPv4/IPv6、是否使用自定义 DNS/DoH/DoT、是否启用 QUIC/HTTP3）
+            请补充（如有）：
+            - 客户端及版本
+            - 代理时和直连时的结果
+            - 脱敏后的日志或证据链接
 
-            请勿在 Issue 中公开密码、Token、Cookie、私钥或其他敏感信息。维护者会人工复核；本自动回复不会自动关闭 Issue。`;
+            在核验完成前不会直接修改生产规则，也不会自动关闭 Issue。
+            请勿提交密码、Token、Cookie 或完整订阅链接。`;
 
             await github.rest.issues.createComment({
               owner: context.repo.owner,

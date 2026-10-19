@@ -19,7 +19,7 @@
   <rect width="1400" height="980" fill="url(#bg)"/>
   <rect x="28" y="28" width="1344" height="924" rx="24" fill="url(#grid)" stroke="#334155"/>
   <text x="70" y="82" class="title">ProxyHub 自动化工作流</text>
-  <text x="70" y="114" class="sub">自动检查 → AI 审查 → 5 分钟静默 → 受保护合并；不会绕过审核直接修改生产规则</text>
+  <text x="70" y="114" class="sub">自动检查 → AI 审查 → 受保护合并；不会绕过审核直接修改生产规则</text>
 
   <!-- inputs -->
   <g filter="url(#shadow)"><rect class="box" x="70" y="170" width="265" height="155" rx="14" fill="url(#blue)" stroke="#22d3ee"/>
@@ -37,7 +37,7 @@
 
   <!-- review/release -->
   <g filter="url(#shadow)"><rect class="box" x="910" y="270" width="330" height="190" rx="14" fill="url(#amber)" stroke="#fbbf24"/>
-    <text x="945" y="310" class="h">🤖 AI + 人工审核</text><text x="945" y="345" class="p">先静默 5 分钟，再审查 PR</text><text x="945" y="372" class="p">检查规则范围与官方证据</text><text x="945" y="399" class="p">仅 automation / dependabot 可自动合并</text><text x="945" y="434" class="badge" fill="#fde68a">通过后仍受分支保护约束</text></g>
+    <text x="945" y="310" class="h">🤖 AI + 人工审核</text><text x="945" y="345" class="p">直接审查 PR</text><text x="945" y="372" class="p">检查规则范围与官方证据</text><text x="945" y="399" class="p">仅 automation / dependabot 可自动合并</text><text x="945" y="434" class="badge" fill="#fde68a">通过后仍受分支保护约束</text></g>
   <g filter="url(#shadow)"><rect class="box" x="910" y="585" width="330" height="190" rx="14" fill="#3f1d38" stroke="#fb7185"/>
     <text x="945" y="625" class="h">🚀 发布与监控</text><text x="945" y="660" class="p">人工确认版本号 RELEASE</text><text x="945" y="687" class="p">创建 tag / GitHub Release</text><text x="945" y="714" class="p">Pages 与订阅健康检查</text><text x="945" y="749" class="small">异常时告警，不自动掩盖问题</text></g>
 

@@ -2,12 +2,13 @@ name: Build domain candidate PR
 
 on:
   issues:
-    types: [opened, edited, reopened]
+    types: [labeled]
 
 permissions:
   contents: write
   issues: write
   pull-requests: write
+  # Candidate generation is additionally gated by the maintainer label below.
   # This workflow is intentionally isolated from untrusted Issue code; only
   # validated data is written to the candidate branch.
 
@@ -17,7 +18,11 @@ concurrency:
 
 jobs:
   candidate:
-    if: contains(github.event.issue.body || '', '域名') && contains(github.event.issue.body || '', '官方证据')
+    if: >-
+      contains(github.event.issue.body || '', '域名') &&
+      contains(github.event.issue.body || '', '目标规则集') &&
+      contains(github.event.issue.body || '', '官方证据') &&
+      contains(github.event.issue.labels.*.name, 'candidate-approved')
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -95,7 +100,12 @@ jobs:
           REPO: ${{ github.repository }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
+          set -euo pipefail
           git push --force-with-lease "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" "automation/issue-domain-${ISSUE_NUMBER}"
+
+      - name: Record fixed candidate commit
+        id: candidate_commit
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Open or update draft PR
         env:
@@ -104,11 +114,12 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           DOMAIN: ${{ steps.candidate.outputs.candidate_added }}
           TARGET: ${{ steps.candidate.outputs.candidate_target }}
+          CANDIDATE_SHA: ${{ steps.candidate_commit.outputs.sha }}
         run: |
           set -euo pipefail
           branch="automation/issue-domain-${ISSUE_NUMBER}"
           existing=$(gh pr list --repo "$REPO" --head "$branch" --state open --json number --jq '.[0].number // empty')
-          body="候选域名：\`${DOMAIN}\`\n目标规则集：\`${TARGET}\`\n\n由 Issue #${ISSUE_NUMBER} 自动生成。\n\n这是 **Draft PR**，不会自动合并。请人工核验官方证据、共享 CDN 风险、规则分类和实际连接需求后再审核。"
+          body="候选域名：\`${DOMAIN}\`\n目标规则集：\`${TARGET}\`\n候选提交：\`${CANDIDATE_SHA}\`\n\n由 Issue #${ISSUE_NUMBER} 自动生成。\n\n这是 **Draft PR**，不会自动合并。请人工核验官方证据、共享 CDN 风险、规则分类和实际连接需求后再审核。\n\n候选测试链接（仅供测试，不影响正式用户）：\nhttps://raw.githubusercontent.com/${REPO}/${CANDIDATE_SHA}/clash/AI-Overseas.yaml\nhttps://raw.githubusercontent.com/${REPO}/${CANDIDATE_SHA}/clash/AI-Domestic.yaml"
           if [[ -n "$existing" ]]; then
             gh pr edit "$existing" --repo "$REPO" --body "$body"
           else
