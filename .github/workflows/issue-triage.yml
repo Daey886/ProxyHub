@@ -83,8 +83,9 @@ jobs:
               state: 'open',
               per_page: 100
             });
-            const domainMatch = issueBody.match(/(?:^|\\n)\\s*域名：?\\s*([^\\s`]+)/i);
-            const domain = domainMatch ? domainMatch[1].toLowerCase().replace(/^https?:\\/\\//, '').replace(/\\/$/, '') : '';
+            const domainLine = issueBody.split(/\r?\n/).find(line => line.trim().startsWith('域名')) || '';
+            const domain = (domainLine.split('：')[1] || domainLine.split(':')[1] || '')
+              .trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/$/, '');
             const duplicate = domain && openIssues.some(candidate => candidate.number !== issue.number &&
               !candidate.pull_request && `${candidate.title}\\n${candidate.body || ''}`.toLowerCase().includes(domain));
             if (duplicate) {
