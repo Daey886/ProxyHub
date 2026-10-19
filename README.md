@@ -59,7 +59,7 @@ RULE-SET,https://raw.githubusercontent.com/Daey886/ProxyHub/main/surge/Streaming
 ### 4. Clash / Mihomo (`rule-providers` 与策略组配置)
 
 #### 方案 A：一键全局扩展脚本 (推荐 · 适用于 Clash Verge Rev / Mihomo Party)
-无需手动繁琐修改订阅配置，在客户端的 **订阅扩展 (Script / 预处理)** 中引入或直接粘贴本脚本，即可全自动生成 **海外 AI (自动避开香港/国内节点)**、**国内 AI 直连**、**流媒体** 等专属策略组并注入置顶规则：
+无需手动繁琐修改订阅配置，在客户端的 **订阅扩展 (Script / 预处理)** 中引入或直接粘贴本脚本，即可全自动生成 **海外 AI (美国优先、避开香港/国内节点)**、**国内 AI 直连**、**流媒体** 等专属策略组并注入置顶规则：
 - **加速引入链接**：`https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@main/clash/extension-script.js`
 - **GitHub 原生链接**：`https://raw.githubusercontent.com/Daey886/ProxyHub/main/clash/extension-script.js`
 
@@ -74,8 +74,8 @@ proxy-groups:
     type: select
     proxies:
       - ⚡ AI自动优选(避开HK)
-      - 🇯🇵 日本节点
       - 🇺🇸 美国节点
+      - 🇯🇵 日本节点
       - 🇸🇬 新加坡节点
       - 🇹🇼 台湾节点
       - 🇬🇧 英国节点
@@ -121,6 +121,19 @@ proxy-groups:
       - 🇯🇵 日本节点
       - 🇸🇬 新加坡节点
       - 🇺🇸 美国节点
+      - DIRECT
+
+  - name: 🐟 漏网之鱼
+    type: select
+    proxies:
+      # 兜底默认美国，但允许手动选择香港及其他地区
+      - 🇺🇸 美国节点
+      - 🇭🇰 香港节点
+      - 🇯🇵 日本节点
+      - 🇸🇬 新加坡节点
+      - 🇹🇼 台湾节点
+      - 🇬🇧 英国节点
+      - 🌐 其他节点
       - DIRECT
 
   # --- 地区节点自动归类 (基于 Mihomo / Clash 正则动态分组) ---
@@ -212,7 +225,7 @@ rules:
   - RULE-SET,social,💬 社交网络
   - RULE-SET,development,💻 开发者服务
   - GEOIP,CN,DIRECT
-  - MATCH,🇭🇰 香港节点
+  - MATCH,🐟 漏网之鱼
 ```
 
 ### 5. V2Ray / Xray (v2rayN / v2rayNG / 路由设置)
