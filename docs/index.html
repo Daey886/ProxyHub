@@ -466,6 +466,11 @@
       font-weight: 500;
     }
 
+    .workflow-visual { margin: 24px 0; padding: 22px; border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 18px; background: rgba(15, 23, 42, 0.78); box-shadow: 0 14px 40px rgba(2, 6, 23, 0.25); }
+    .workflow-visual-title { font-size: 20px; font-weight: 750; color: var(--text); }
+    .workflow-visual-desc { margin: 8px 0 16px; color: var(--text-muted); font-size: 14px; line-height: 1.6; }
+    .workflow-visual img { display: block; width: 100%; height: auto; border-radius: 12px; background: #081225; }
+
     .contribution-area {
       margin-top: 28px;
       padding: 22px 24px;
@@ -589,6 +594,12 @@
         </ul>
       </div>
       <button class="update-notice-close" type="button" aria-label="关闭更新消息" onclick="dismissUpdateNotice()">×</button>
+    </section>
+
+    <section class="workflow-visual" aria-label="自动化工作流图">
+      <div class="workflow-visual-title">🧭 自动化工作流一图看懂</div>
+      <p class="workflow-visual-desc">从 Issue、Pull Request 和定时任务开始，经过自动验证和候选变更，最后由维护者人工审核后发布。</p>
+      <img src="./automation-workflows.svg" alt="ProxyHub 自动化工作流：Issue、Pull Request、定时任务经过自动验证，生成候选变更，经人工审核后发布与监控" loading="lazy">
     </section>
 
     <div class="grid" id="rules-grid"></div>
