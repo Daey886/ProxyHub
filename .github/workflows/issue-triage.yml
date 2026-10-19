@@ -1,0 +1,98 @@
+name: Triage Issues
+
+on:
+  issues:
+    types: [opened, reopened]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: issue-triage-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Classify and acknowledge issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const text = `${issue.title}\n${issue.body || ''}`.toLowerCase();
+            const labels = [
+              { name: 'triage', color: '7057ff', description: 'Issue awaiting maintainer review' },
+              { name: 'issue:rule', color: '1d76db', description: 'Rule coverage or routing issue' },
+              { name: 'issue:link', color: '0e8a16', description: 'Broken, unavailable, or stale link' },
+              { name: 'issue:client', color: '5319e7', description: 'Client or platform compatibility issue' },
+              { name: 'issue:feature', color: 'a2eeef', description: 'Feature request or improvement' },
+              { name: 'issue:other', color: 'cfd3d7', description: 'Issue requiring manual classification' }
+            ];
+
+            for (const label of labels) {
+              try {
+                await github.rest.issues.getLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: label.name
+                });
+              } catch (error) {
+                if (error.status !== 404) throw error;
+                await github.rest.issues.createLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: label.name,
+                  color: label.color,
+                  description: label.description
+                });
+              }
+            }
+
+            const rules = [
+              { label: 'issue:rule', keywords: ['规则', '分流', '侧漏', '域名', 'rule', 'routing', 'leak'] },
+              { label: 'issue:link', keywords: ['链接', '失效', '打不开', '订阅', 'link', 'broken', 'unavailable', '404'] },
+              { label: 'issue:client', keywords: ['loon', 'quantumult', 'surge', 'shadowrocket', 'clash', 'mihomo', 'xray', '客户端', '兼容'] },
+              { label: 'issue:feature', keywords: ['建议', '功能', '增加', '希望', 'feature', 'request', 'enhancement'] }
+            ];
+            const matched = rules.find(rule => rule.keywords.some(keyword => text.includes(keyword)));
+            const category = matched ? matched.label : 'issue:other';
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              labels: ['triage', category]
+            });
+
+            const marker = '<!-- proxyhub-issue-triage -->';
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              per_page: 100
+            });
+            if (comments.some(comment => comment.body && comment.body.includes(marker))) {
+              core.info('Triage comment already exists; skipping duplicate reply.');
+              return;
+            }
+
+            const body = `${marker}
+            感谢提交 Issue，已自动加入待处理队列并标记为 **${category}**。
+
+            为便于维护者复现，请补充以下信息（如适用）：
+            - 使用的客户端及版本（例如 Clash/Mihomo、Loon、Surge 等）
+            - 使用的规则或脚本链接，以及导入时间
+            - 具体域名、URL 或脱敏后的配置片段
+            - 实际现象、预期行为和客户端日志
+            - 网络环境（IPv4/IPv6、是否使用自定义 DNS/DoH/DoT、是否启用 QUIC/HTTP3）
+
+            请勿在 Issue 中公开密码、Token、Cookie、私钥或其他敏感信息。维护者会人工复核；本自动回复不会自动关闭 Issue。`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body
+            });
