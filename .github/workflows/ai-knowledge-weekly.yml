@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
 
 concurrency:
@@ -116,7 +116,7 @@ jobs:
             exit 0
           fi
           git commit -m 'docs(auto): update AI automation knowledge library'
-          git push --force-with-lease origin "$BRANCH"
+          git push --force-with-lease "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$BRANCH"
           existing="$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BRANCH" --state open --json number --jq '.[0].number')"
           if [ -n "$existing" ]; then
             echo "Updated existing knowledge PR #$existing"

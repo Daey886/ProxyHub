@@ -27,10 +27,11 @@ env:
 jobs:
   review:
     if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (!github.event.pull_request.draft &&
-       (startsWith(github.event.pull_request.head.ref, 'automation/') ||
-        startsWith(github.event.pull_request.head.ref, 'dependabot/')))
+      (github.event_name == 'workflow_dispatch' ||
+       (!github.event.pull_request.draft &&
+        (startsWith(github.event.pull_request.head.ref, 'automation/') ||
+         startsWith(github.event.pull_request.head.ref, 'dependabot/')))) &&
+      (github.event_name != 'workflow_dispatch' || inputs.pull_request_number != '')
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
