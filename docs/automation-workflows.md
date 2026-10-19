@@ -12,15 +12,15 @@
 | `Cloudflare AI PR Review` | PR 创建、更新、重新打开；也可手动指定 PR | 使用 Cloudflare Workers AI 审查；自动维护 PR 可在通过后启用受保护自动合并 | 仅限受信任自动维护 PR |
 | `Sync AI Leaderboards & Auto Update Rules` | 每小时整点、手动触发 | 抓取 AI 平台、生成各客户端规则、上传审计报告、创建或更新 PR | 否 |
 | `Scheduled Rules Security Audit` | 每小时第 30 分钟、手动触发 | 审计正式规则；失败时创建告警 Issue | 否 |
-| `Build domain candidate PR` | 域名申请 Issue 新建、编辑、重新打开 | 校验官方证据、生成候选规则、创建 Draft PR | 否 |
-| `Triage Issues` | Issue 新建、重新打开 | 添加分类标签、请求补充复现信息 | 否 |
+| `Build domain candidate PR` | 维护者给 Issue 添加 `candidate-approved` 标签 | 校验官方证据、生成候选规则、创建 Draft PR，并提供固定提交 SHA 的候选测试链接 | 否 |
+| `Triage Issues` | Issue 新建、重新打开 | 添加分类标签、请求最少量补充信息 | 否 |
 | `External Links and Rules Audit` | 每日 UTC 03:15、手动触发 | 检查文档中的外部链接和规则资源 | 否 |
 | `Keep GitHub Pages Alive` | 每小时、手动触发 | 检查 Pages；失败时请求 Pages 重建 | 仅请求 Pages 重建 |
 | `Release validation and publish` | 手动触发 | 校验版本、测试、审计、创建 Git tag 和 GitHub Release | 否；发布前需人工确认 |
 | `pages-build-deployment` | GitHub Pages 平台自动触发 | 发布 `docs/` 网站 | 由 GitHub Pages 管理 |
 | `Weekly AI Automation Knowledge Update` | 每 7 天（周日 03:40 UTC）；也可手动触发 | 使用 `@cf/cloudflare/clef-flash` 整理项目自动化知识库并创建候选 PR | 否 |
 
-> Cloudflare AI 审查分为两类：人工 PR 只发表评论，不自动合并；`automation/*` 和 `dependabot/*` 的自动维护 PR 在静默 5 分钟后才审查，只有模型明确输出“结论：通过”时才启用 GitHub 受保护自动合并。它仍不能绕过分支保护、必需检查或仓库规则。模型不会修改文件。
+> Cloudflare AI 审查分为两类：人工 PR 只发表评论，不自动合并；`automation/*` 和 `dependabot/*` 的自动维护 PR 直接审查，只有模型明确输出“结论：通过”时才启用 GitHub 受保护自动合并。它仍不能绕过分支保护、必需检查或仓库规则。模型不会修改文件。
 
 启用前，在 GitHub 仓库 **Settings → Secrets and variables → Actions** 添加：
 
@@ -80,7 +80,7 @@ Cloudflare API 失败、返回空结果或格式异常时，工作流失败并�
 
 ### 3. 域名申请与官方证据
 
-用户应通过 Issue 模板提交域名申请，至少提供：域名、目标规则集、官方来源或证据、客户端、现象和必要日志。`Build domain candidate PR` 会：
+用户应通过 Issue 模板提交域名、请求类型、客户端、问题描述和代理/直连结果；证据或日志链接可选。`Build domain candidate PR` 会：
 
 1. 校验 Issue 是否包含域名申请字段。
 2. 验证官方证据。
@@ -88,8 +88,9 @@ Cloudflare API 失败、返回空结果或格式异常时，工作流失败并�
 4. 写入候选清单并生成所有客户端规则。
 5. 运行测试。
 6. 创建或更新 Draft PR。
+7. 在 Draft PR 正文中提供候选分支固定提交 SHA 的测试链接，并明确仅供测试、不影响正式用户。
 
-Issue 内容是不可信输入，不会被当作 shell、脚本或配置执行；候选 PR 不会自动合并。
+Issue 内容是不可信输入，不会被当作 shell、脚本或配置执行；候选 PR 不会自动合并。正式合并前不要求用户测试 `main` 正式链接。
 
 ### 4. 定时规则安全审计
 
@@ -104,6 +105,12 @@ Issue 内容是不可信输入，不会被当作 shell、脚本或配置执行�
 ### 6. Issue 自动分流
 
 `Triage Issues` 会根据标题和正文添加 `triage` 及规则、链接、客户端或功能分类标签，并回复复现信息清单。它不会自动关闭 Issue，也不会根据关键词修改生产规则。
+
+完整流程图：
+
+![Issue 从提交到结束的完整流程](./issue-lifecycle-flow.svg)
+
+提交者只需填写域名、请求类型、目标规则集、客户端及版本、问题描述和代理/直连结果。官方证据在生成候选规则前需要补充，日志可选。测试失败、证据冲突或风险无法确认时，不合并候选规则，也不影响正式用户。
 
 ## 发布流程
 
@@ -150,6 +157,10 @@ Issue 内容是不可信输入，不会被当作 shell、脚本或配置执行�
 - Issue、标题、正文、域名和 URL 均视为不可信输入。
 - 不在日志、文档或提交中保存 Token、密码、Cookie、私钥或其他凭据。
 - 自动化生成的内容必须通过测试、规则审计和人工 PR 审核后才能进入 `main`。
+- Issue 防护：同一提交者 24 小时内超过 3 个 Issue、正文过长、链接过多或包含明显脚本特征时，仅添加 `spam-suspected` 标签，不生成候选 PR。
+- 同一域名已有开放 Issue 时标记 `duplicate`，不重复生成候选变更。
+- 域名候选 PR 还必须由维护者添加 `candidate-approved` 标签；普通 Issue 内容不能直接获得写分支或建 PR 的权限。
+- `Triage Issues` 使用 `contents: none`，不执行 Issue 内容；Issue 正文、标题、域名、URL 和日志均按不可信文本处理。
 
 相关文件：
 
