@@ -1,4 +1,7 @@
 # AI-Overseas Ruleset for V2Ray / Xray / v2rayN / v2rayNG
+# Total Domains: 64
+# Managed by scripts/auto_update_ai.py - manual additions are preserved.
+
 domain:accounts.google.com
 domain:ai.google.dev
 domain:aiplatform.googleapis.com
@@ -8,13 +11,18 @@ domain:anthropic.com
 domain:antigravity-unleash.goog
 domain:antigravity.com
 domain:antigravity.google
+domain:apis.google.com
 domain:cerebras.ai
 domain:chatgpt.com
 domain:claude.ai
+domain:claude.com
+domain:clients1.google.com
+domain:clients2.google.com
+domain:clients4.google.com
+domain:clients6.google.com
 domain:cloudcode-pa.googleapis.com
 domain:codestral.mistral.ai
 domain:cohere.com
-domain:copilot.githubusercontent.com
 domain:copilot.microsoft.com
 domain:cursor.com
 domain:cursor.sh
@@ -30,6 +38,10 @@ domain:groq.com
 domain:huggingface.co
 domain:ideogram.ai
 domain:klingai.com
+domain:lh3.googleusercontent.com
+domain:lh4.googleusercontent.com
+domain:lh5.googleusercontent.com
+domain:lh6.googleusercontent.com
 domain:llama.meta.com
 domain:meta.ai
 domain:midjourney.com
@@ -41,7 +53,6 @@ domain:oauth2.googleapis.com
 domain:openai.com
 domain:openrouter.ai
 domain:perplexity.ai
-domain:play.googleapis.com
 domain:poe.com
 domain:replicate.com
 domain:router.huggingface.co
@@ -54,5 +65,4 @@ domain:together.ai
 domain:together.xyz
 domain:tokenharbor.ai
 domain:voyageai.com
-domain:www.googleapis.com
 domain:x.ai

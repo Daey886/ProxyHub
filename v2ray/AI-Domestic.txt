@@ -1,4 +1,7 @@
 # AI-Domestic Ruleset for V2Ray / Xray / v2rayN / v2rayNG
+# Total Domains: 39
+# Managed by scripts/auto_update_ai.py - manual additions are preserved.
+
 domain:01.ai
 domain:aliyun.com
 domain:baai.ac.cn
