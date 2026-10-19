@@ -11,7 +11,11 @@ PROVIDER_DOMAINS = {
         "anthropic": ["anthropic.com", "claude.ai"],
         "google": [
             "generativelanguage.googleapis.com", "ai.google.dev", "aistudio.google.com",
-            "aiplatform.googleapis.com", "gemini.google.com", "antigravity.google", "antigravity.com"
+            "aiplatform.googleapis.com", "gemini.google.com", "antigravity.google", "antigravity.com",
+            "gstatic.com", "googleusercontent.com", "googleapis.com",
+            "apis.google.com", "clients1.google.com", "clients2.google.com",
+            "clients4.google.com", "clients6.google.com", "lh3.googleusercontent.com",
+            "lh4.googleusercontent.com", "lh5.googleusercontent.com", "lh6.googleusercontent.com"
         ],
         "meta": ["llama.meta.com", "meta.ai"],
         "mistral": ["mistral.ai", "codestral.mistral.ai"],

@@ -1,5 +1,5 @@
 # AI-Overseas Ruleset (Auto-Generated)
-# Total Domains: 57
+# Total Domains: 69
 
 DOMAIN-SUFFIX,accounts.google.com
 DOMAIN-SUFFIX,ai.google.dev
@@ -10,9 +10,14 @@ DOMAIN-SUFFIX,anthropic.com
 DOMAIN-SUFFIX,antigravity-unleash.goog
 DOMAIN-SUFFIX,antigravity.com
 DOMAIN-SUFFIX,antigravity.google
+DOMAIN-SUFFIX,apis.google.com
 DOMAIN-SUFFIX,cerebras.ai
 DOMAIN-SUFFIX,chatgpt.com
 DOMAIN-SUFFIX,claude.ai
+DOMAIN-SUFFIX,clients1.google.com
+DOMAIN-SUFFIX,clients2.google.com
+DOMAIN-SUFFIX,clients4.google.com
+DOMAIN-SUFFIX,clients6.google.com
 DOMAIN-SUFFIX,cloudcode-pa.googleapis.com
 DOMAIN-SUFFIX,codestral.mistral.ai
 DOMAIN-SUFFIX,cohere.com
@@ -27,11 +32,18 @@ DOMAIN-SUFFIX,fireworks.ai
 DOMAIN-SUFFIX,gemini.google.com
 DOMAIN-SUFFIX,generativelanguage.googleapis.com
 DOMAIN-SUFFIX,githubcopilot.com
+DOMAIN-SUFFIX,googleapis.com
+DOMAIN-SUFFIX,googleusercontent.com
 DOMAIN-SUFFIX,grok.com
 DOMAIN-SUFFIX,groq.com
+DOMAIN-SUFFIX,gstatic.com
 DOMAIN-SUFFIX,huggingface.co
 DOMAIN-SUFFIX,ideogram.ai
 DOMAIN-SUFFIX,klingai.com
+DOMAIN-SUFFIX,lh3.googleusercontent.com
+DOMAIN-SUFFIX,lh4.googleusercontent.com
+DOMAIN-SUFFIX,lh5.googleusercontent.com
+DOMAIN-SUFFIX,lh6.googleusercontent.com
 DOMAIN-SUFFIX,llama.meta.com
 DOMAIN-SUFFIX,meta.ai
 DOMAIN-SUFFIX,midjourney.com
