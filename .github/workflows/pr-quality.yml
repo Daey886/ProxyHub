@@ -29,6 +29,13 @@ jobs:
         run: python scripts/auto_update_ai.py --offline --check
       - name: Rules security audit
         run: python scripts/rules_audit.py
+      - name: Generate change report
+        run: python scripts/rules_change_report.py origin/main > "$RUNNER_TEMP/rules-change-report.md"
+      - name: Upload change report
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: rules-change-report
+          path: ${{ runner.temp }}/rules-change-report.md
       - name: Python syntax
         run: python -m compileall -q scripts tests
       - name: JavaScript syntax
