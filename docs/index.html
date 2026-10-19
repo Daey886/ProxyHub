@@ -466,6 +466,60 @@
       font-weight: 500;
     }
 
+    .contribution-area {
+      margin-top: 28px;
+      padding: 22px 24px;
+      border: 1px solid rgba(129, 140, 248, 0.35);
+      border-radius: 14px;
+      background: rgba(30, 41, 59, 0.72);
+      text-align: left;
+    }
+
+    .contribution-title {
+      color: #e0e7ff;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .contribution-desc {
+      margin-top: 8px;
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .contribution-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .contribution-actions a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 8px 14px;
+      border: 1px solid rgba(129, 140, 248, 0.4);
+      border-radius: 8px;
+      background: rgba(99, 102, 241, 0.14);
+      color: #c7d2fe;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .contribution-actions a:hover {
+      background: rgba(99, 102, 241, 0.28);
+      color: #eef2ff;
+    }
+
+    @media (max-width: 600px) {
+      .contribution-area { padding: 18px; }
+      .contribution-actions a { width: 100%; }
+    }
+
     .risk-disclosure {
       margin: 0 0 24px;
       padding: 18px 20px;
@@ -565,6 +619,16 @@
         <a class="action-btn btn-copy" href="https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.14/clash/extension-script.js" target="_blank">🌐 预览 JS 源码</a>
       </div>
     </div>
+
+    <section class="contribution-area" aria-label="提交与参与贡献">
+      <div class="contribution-title">🛠️ 提交问题与参与贡献</div>
+      <p class="contribution-desc">发现规则遗漏、链接失效或功能问题？欢迎在 GitHub 提交 Issue；如果你有改进方案，也可以提交 Pull Request。</p>
+      <div class="contribution-actions">
+        <a href="https://github.com/Daey886/ProxyHub" target="_blank" rel="noopener noreferrer">📦 查看项目仓库</a>
+        <a href="https://github.com/Daey886/ProxyHub/issues/new" target="_blank" rel="noopener noreferrer">🐛 提交 Issue</a>
+        <a href="https://github.com/Daey886/ProxyHub/compare" target="_blank" rel="noopener noreferrer">🔀 提交 Pull Request</a>
+      </div>
+    </section>
 
     <footer>
       <p>开源透明 · 无任何隐私外泄 · 零第三方依赖</p>
