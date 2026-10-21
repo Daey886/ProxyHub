@@ -303,7 +303,7 @@ function main(config, profileName) {
     {
       name: "🐟 漏网之鱼",
       type: "select",
-      // Unmatched traffic defaults to the US group; HK remains selectable here.
+      // 未匹配流量默认走美国节点组，其余地区组与专线组备选，DIRECT 兜底
       proxies: [
         ...normalRegionGroupNames.filter(n => n.includes("美国")),
         ...normalRegionGroupNames.filter(n => !n.includes("美国")),
@@ -315,8 +315,7 @@ function main(config, profileName) {
     {
       name: "🤖 海外AI",
       type: "select",
-      // Clash/Mihomo uses the first selectable proxy as the initial choice.
-      // Prefer the US group, then retain other non-HK choices and fallback.
+      // 海外 AI 服务默认优先美国节点组，并排除香港组（部分海外 AI 屏蔽香港 IP），DIRECT 兜底
       proxies: [
         ...normalRegionGroupNames.filter(n => n.includes("美国") && !n.includes("香港")),
         ...normalRegionGroupNames.filter(n => !n.includes("美国") && !n.includes("香港")),
@@ -327,7 +326,8 @@ function main(config, profileName) {
     {
       name: "🇨🇳 国产AI",
       type: "select",
-      proxies: ["🏠 国内直连", "DIRECT", "Proxy", ...allRegionGroups]
+      // 国产 AI 服务均部署在国内，纯国内直连，严禁混入 Proxy 或海外节点组
+      proxies: ["🏠 国内直连", "DIRECT"]
     },
     {
       name: "🎬 国际流媒体",
