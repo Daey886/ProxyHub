@@ -761,44 +761,60 @@
     function openImportModal(clientName, fileKey, isDirect, format) {
       modalTitle.innerText = `${clientName} · 一键导入通道`;
 
-      // 构造生成函数
-      function generateUrl(baseUrl) {
-        if (clientName.includes("V2Ray")) {
-          return `${baseUrl}/v2ray/${fileKey}.txt`;
-        }
-        if (clientName.includes("Clash")) {
-          return `${baseUrl}/clash/${fileKey}.yaml`;
-        }
-        if (clientName.includes("Loon")) {
-          const rawUrl = `${baseUrl}/loon/${fileKey}.list`;
-          return `loon://import?rule=${encodeURIComponent(rawUrl)}&tag=${encodeURIComponent(fileKey)}&policy=${isDirect ? 'DIRECT' : encodeURIComponent('海外AI')}&enable=true`;
-        }
-        if (clientName.includes("QX")) {
-          const rawUrl = `${baseUrl}/qx/${fileKey}.snippet`;
-          return `quantumult-x:///add-resource?remote-resource=${encodeURIComponent(JSON.stringify({filter_remote: [rawUrl]}))}`;
-        }
-        if (clientName.includes("Surge")) {
-          const rawUrl = `${baseUrl}/surge/${fileKey}.list`;
-          return `surge:///install-rule-set?url=${encodeURIComponent(rawUrl)}`;
-        }
-        if (clientName.includes("小火箭")) {
-          const rawUrl = `${baseUrl}/shadowrocket/${fileKey}.list`;
-          return `shadowrocket://add/rule?url=${encodeURIComponent(rawUrl)}`;
-        }
+      // 获取纯文本规则源 URL
+      function getRawResourceUrl(baseUrl) {
+        if (clientName.includes("V2Ray")) return `${baseUrl}/v2ray/${fileKey}.txt`;
+        if (clientName.includes("Clash")) return `${baseUrl}/clash/${fileKey}.yaml`;
+        if (clientName.includes("Loon")) return `${baseUrl}/loon/${fileKey}.list`;
+        if (clientName.includes("QX")) return `${baseUrl}/qx/${fileKey}.snippet`;
+        if (clientName.includes("Surge")) return `${baseUrl}/surge/${fileKey}.list`;
+        if (clientName.includes("小火箭")) return `${baseUrl}/shadowrocket/${fileKey}.list`;
         return baseUrl;
       }
 
-      if (clientName.includes("Clash") || clientName.includes("V2Ray")) {
-        btnSpeed.onclick = () => { copyToClipboard(generateUrl(BASE_SPEED)); closeModal(); };
-        btnSpeed.removeAttribute("href");
-        btnRaw.onclick = () => { copyToClipboard(generateUrl(BASE_RAW)); closeModal(); };
-        btnRaw.removeAttribute("href");
-      } else {
-        btnSpeed.onclick = () => { closeModal(); };
-        btnSpeed.href = generateUrl(BASE_SPEED);
-        btnRaw.onclick = () => { closeModal(); };
-        btnRaw.href = generateUrl(BASE_RAW);
+      // 获取各客户端一键唤醒 Scheme
+      function getAppScheme(rawUrl) {
+        if (clientName.includes("小火箭")) {
+          return `shadowrocket://rules/add?url=${encodeURIComponent(rawUrl)}&name=${encodeURIComponent(fileKey)}`;
+        }
+        if (clientName.includes("Loon")) {
+          return `loon://import?rule=${encodeURIComponent(rawUrl)}&tag=${encodeURIComponent(fileKey)}&policy=${isDirect ? 'DIRECT' : encodeURIComponent('海外AI')}&enable=true`;
+        }
+        if (clientName.includes("QX")) {
+          return `quantumult-x:///add-resource?remote-resource=${encodeURIComponent(JSON.stringify({filter_remote: [rawUrl]}))}`;
+        }
+        if (clientName.includes("Surge")) {
+          return `surge:///install-rule-set?url=${encodeURIComponent(rawUrl)}`;
+        }
+        if (clientName.includes("Clash")) {
+          return `clash://install-config?url=${encodeURIComponent(rawUrl)}&name=${encodeURIComponent('ProxyHub-' + fileKey)}`;
+        }
+        return null;
       }
+
+      function handleAction(baseUrl) {
+        const rawUrl = getRawResourceUrl(baseUrl);
+        const scheme = getAppScheme(rawUrl);
+
+        // 统一复制规则直链至剪贴板
+        copyToClipboard(rawUrl);
+
+        if (scheme) {
+          showToast(`已唤起 ${clientName}，并已复制链接保底！`);
+          // 延迟触发唤醒，避免与剪贴板写操作冲突并确保弹窗状态过渡
+          setTimeout(() => {
+            window.location.href = scheme;
+          }, 150);
+        } else {
+          showToast(`已复制 ${fileKey} 规则链接到剪贴板！`);
+        }
+        closeModal();
+      }
+
+      btnSpeed.onclick = (e) => { e.preventDefault(); handleAction(BASE_SPEED); };
+      btnSpeed.setAttribute("href", "javascript:void(0);");
+      btnRaw.onclick = (e) => { e.preventDefault(); handleAction(BASE_RAW); };
+      btnRaw.setAttribute("href", "javascript:void(0);");
 
       modal.classList.add("active");
     }
