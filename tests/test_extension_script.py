@@ -65,5 +65,29 @@ class TestClashExtensionScript(unittest.TestCase):
             self.assertEqual(rps[name].get("format"), "yaml")
             self.assertEqual(rps[name].get("behavior"), "domain")
 
+    def test_direct_only_groups_contain_no_proxy_group(self):
+        # 直连类策略组必须纯直连，严禁混入任何策略组名或实体节点
+        config = {
+            "proxies": [
+                {"name": "🇭🇰 香港 01", "type": "ss", "server": "1.1.1.1", "port": 1000, "cipher": "aes-128-gcm", "password": "pwd"},
+                {"name": "🇺🇸 美国 01", "type": "ss", "server": "2.2.2.2", "port": 2000, "cipher": "aes-128-gcm", "password": "pwd"}
+            ]
+        }
+        res = self.run_script_with_config(config)
+        group_names = set()
+        for g in res["proxy-groups"]:
+            group_names.add(g["name"])
+        direct_only_groups = ["🔒 私有网络", "🏠 国内直连"]
+        for g in res["proxy-groups"]:
+            if g["name"] in direct_only_groups:
+                self.assertEqual(g["proxies"], ["DIRECT"],
+                    f"{g['name']} 直连组只能包含 DIRECT，不允许混入策略组/节点")
+        # 兜底：所有直连语义组的成员都不得是其他策略组名
+        for g in res["proxy-groups"]:
+            if "直连" in g["name"] or "私有网络" in g["name"]:
+                for member in g["proxies"]:
+                    self.assertNotIn(member, group_names,
+                        f"{g['name']} 直连组错误嵌套了策略组 {member}")
+
 if __name__ == "__main__":
     unittest.main()
