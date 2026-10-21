@@ -297,7 +297,8 @@ function main(config, profileName) {
     {
       name: "🏠 国内直连",
       type: "select",
-      proxies: ["DIRECT", "Proxy"]
+      // 直连组必须纯直连：严禁混入任何策略组（如 Proxy），否则国内流量可能被误路由到代理
+      proxies: ["DIRECT"]
     },
     {
       name: "🐟 漏网之鱼",
