@@ -49,11 +49,12 @@ class TestClashExtensionScript(unittest.TestCase):
         self.assertEqual(rules[-1], "MATCH,🐟 漏网之鱼")
 
     def test_version_fallback_when_offline(self):
-        # 测试在完全没有节点或离线状态下，版本策略组拥有本地直接代理兜底，不会报错
+        # 测试在完全没有节点或离线状态下，版本策略组拥有本地直接代理兜底，不会报错且不存在自循环依赖
         config = {"proxies": []}
         res = self.run_script_with_config(config)
         version_group = next(g for g in res["proxy-groups"] if "当前版本" in g["name"])
-        self.assertIn("📌 当前版本：v1.1.15", version_group.get("proxies", []))
+        self.assertIn("🖥️ 当前版本：v1.1.15", version_group.get("proxies", []))
+        self.assertNotIn(version_group["name"], version_group.get("proxies", []))
 
     def test_rule_providers_format_yaml(self):
         config = {"proxies": []}

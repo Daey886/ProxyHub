@@ -47,7 +47,8 @@ function main(config, profileName) {
   };
 
   // 本地冗余兜底：往 proxies 注入虚拟节点，保证离线或首启无网时策略组不报错
-  const versionNodeName = `📌 当前版本：${SCRIPT_VERSION}`;
+  // 注意：节点名称必须与策略组名称严格区分，否则 Clash/Mihomo 会判定为自循环依赖抛出 "loop is detected in ProxyGroup" 错误
+  const versionNodeName = `🖥️ 当前版本：${SCRIPT_VERSION}`;
   const hasVersionProxy = config.proxies.some(p => p.name === versionNodeName);
   if (!hasVersionProxy) {
     config.proxies.unshift({
