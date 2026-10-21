@@ -35,71 +35,77 @@ function main(config, profileName) {
 
   if (!config["rule-providers"]) config["rule-providers"] = {};
 
-  // 远程版本订阅：刷新订阅后，客户端会重新拉取并显示最新版本虚拟节点
+  // 远程版本订阅：优先使用 CDN 镜像加速，同时保留本地兜底
   const VERSION_PROVIDER = "proxyhub-version";
   config["proxy-providers"] = config["proxy-providers"] || {};
   config["proxy-providers"][VERSION_PROVIDER] = {
     type: "http",
-    url: "https://github.com/Daey886/ProxyHub/raw/refs/heads/main/clash/version.yaml",
+    url: "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@main/clash/version.yaml",
     path: "./proxy_providers/proxyhub-version.yaml",
     interval: 3600,
     "health-check": { enable: false }
   };
 
+  // 本地冗余兜底：往 proxies 注入虚拟节点，保证离线或首启无网时策略组不报错
+  const versionNodeName = `📌 当前版本：${SCRIPT_VERSION}`;
+  const hasVersionProxy = config.proxies.some(p => p.name === versionNodeName);
+  if (!hasVersionProxy) {
+    config.proxies.unshift({
+      name: versionNodeName,
+      type: "direct"
+    });
+  }
+
   // 专线识别正则 (IPLC / IEPL / 专线 / 广港 / 沪日 / 莞港 / 深港 / 京德 / 广新 等)
   const IPLC_REG = /(IPLC|IEPL|专线|广港|沪日|莞港|深港|京德|广新|中继专线|内网互联)/i;
 
-  const rawProxies = config.proxies;
+  const rawProxies = config.proxies.filter(p => p.name !== versionNodeName);
 
-  // 2. 注入规则集 Rule-Providers (走 ProxyHub 镜像源)
+  // 2. 注入规则集 Rule-Providers (走 ProxyHub CDN 镜像源)
   const RULE_BASE = "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.14/clash";
-
-  config["rule-providers"]["ai-overseas"] = {
+  const commonRuleOpt = {
     type: "http",
     behavior: "domain",
+    format: "yaml",
+    interval: 86400
+  };
+
+  config["rule-providers"]["ai-overseas"] = {
+    ...commonRuleOpt,
     url: `${RULE_BASE}/AI-Overseas.yaml`,
     path: "./ruleset/ai-overseas.yaml",
     interval: 3600
   };
 
   config["rule-providers"]["ai-domestic"] = {
-    type: "http",
-    behavior: "domain",
+    ...commonRuleOpt,
     url: `${RULE_BASE}/AI-Domestic.yaml`,
     path: "./ruleset/ai-domestic.yaml",
     interval: 3600
   };
 
   config["rule-providers"]["streaming"] = {
-    type: "http",
-    behavior: "domain",
+    ...commonRuleOpt,
     url: `${RULE_BASE}/Streaming.yaml`,
-    path: "./ruleset/streaming.yaml",
-    interval: 86400
+    path: "./ruleset/streaming.yaml"
   };
 
   config["rule-providers"]["social"] = {
-    type: "http",
-    behavior: "domain",
+    ...commonRuleOpt,
     url: `${RULE_BASE}/Social.yaml`,
-    path: "./ruleset/social.yaml",
-    interval: 86400
+    path: "./ruleset/social.yaml"
   };
 
   config["rule-providers"]["development"] = {
-    type: "http",
-    behavior: "domain",
+    ...commonRuleOpt,
     url: `${RULE_BASE}/Development.yaml`,
-    path: "./ruleset/development.yaml",
-    interval: 86400
+    path: "./ruleset/development.yaml"
   };
 
   config["rule-providers"]["advertising"] = {
-    type: "http",
-    behavior: "domain",
+    ...commonRuleOpt,
     url: `${RULE_BASE}/Advertising.yaml`,
-    path: "./ruleset/advertising.yaml",
-    interval: 86400
+    path: "./ruleset/advertising.yaml"
   };
 
   // 3. 动态提取节点并按国家/地区智能分组 (常规组 + 专线独立组)
@@ -272,7 +278,7 @@ function main(config, profileName) {
     {
       name: `📌 当前版本：${SCRIPT_VERSION}`,
       type: "select",
-      // 仅使用远程版本提供器；其第一个节点即为默认选择
+      proxies: [versionNodeName],
       use: [VERSION_PROVIDER]
     },
     // Proxy：直接选择各个节点组
@@ -353,23 +359,33 @@ function main(config, profileName) {
 
   // 5. 插入分流规则 (置顶匹配)
   const customRules = [
-    // 私有网络与本机域名优先直连
+    // 局域网私有网络与本机域名优先直连 (防内网断联与回环)
     "DOMAIN-SUFFIX,local,🔒 私有网络",
     "DOMAIN-SUFFIX,lan,🔒 私有网络",
+    "DOMAIN-SUFFIX,localhost,🔒 私有网络",
     "IP-CIDR,10.0.0.0/8,🔒 私有网络,no-resolve",
     "IP-CIDR,172.16.0.0/12,🔒 私有网络,no-resolve",
     "IP-CIDR,192.168.0.0/16,🔒 私有网络,no-resolve",
     "IP-CIDR,127.0.0.0/8,🔒 私有网络,no-resolve",
     "IP-CIDR,169.254.0.0/16,🔒 私有网络,no-resolve",
-    // 国内 IPv4 与 .cn 域名直连
-    "DOMAIN-SUFFIX,cn,🏠 国内直连",
-    "GEOIP,CN,🏠 国内直连,no-resolve",
+    "GEOIP,LAN,🔒 私有网络,no-resolve",
+
+    // 广告拦截置顶
     "RULE-SET,advertising,🛑 广告拦截",
+
+    // 业务专用分流规则集
     "RULE-SET,ai-domestic,🇨🇳 国产AI",
     "RULE-SET,ai-overseas,🤖 海外AI",
     "RULE-SET,streaming,🎬 国际流媒体",
     "RULE-SET,social,💬 社交网络",
     "RULE-SET,development,💻 开发者服务",
+
+    // 中国大陆域名与 IP 直连保护（避免国内流量全跑国外代理导致高延迟与风控）
+    "DOMAIN-SUFFIX,cn,🏠 国内直连",
+    "GEOSITE,CN,🏠 国内直连",
+    "GEOIP,CN,🏠 国内直连,no-resolve",
+
+    // 未匹配流量漏网之鱼兜底
     "MATCH,🐟 漏网之鱼"
   ];
 
