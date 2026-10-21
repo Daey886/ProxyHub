@@ -89,5 +89,40 @@ class TestClashExtensionScript(unittest.TestCase):
                     self.assertNotIn(member, group_names,
                         f"{g['name']} 直连组错误嵌套了策略组 {member}")
 
+    def test_domestic_ai_group_is_pure_domestic(self):
+        # 国产AI 组必须纯国内：只允许指向国内直连组或 DIRECT，严禁混入 Proxy / 海外节点组 / 专线组
+        config = {
+            "proxies": [
+                {"name": "🇭🇰 香港 01", "type": "ss", "server": "1.1.1.1", "port": 1000, "cipher": "aes-128-gcm", "password": "pwd"},
+                {"name": "🇺🇸 美国 01", "type": "ss", "server": "2.2.2.2", "port": 2000, "cipher": "aes-128-gcm", "password": "pwd"}
+            ]
+        }
+        res = self.run_script_with_config(config)
+        group_names = {g["name"] for g in res["proxy-groups"]}
+        domestic_ai = next(g for g in res["proxy-groups"] if g["name"] == "🇨🇳 国产AI")
+        allowed = {"🏠 国内直连", "DIRECT"}
+        for member in domestic_ai["proxies"]:
+            self.assertIn(member, allowed, f"国产AI 组不应包含 {member}")
+        # 明确禁止 Proxy 总出口与任何海外/专线组
+        for member in domestic_ai["proxies"]:
+            self.assertNotEqual(member, "Proxy")
+            self.assertNotIn(member, group_names - {"🏠 国内直连"},
+                f"国产AI 组错误嵌套了策略组 {member}")
+
+    def test_proxy_business_groups_uniform_structure(self):
+        # 代理业务组统一结构：默认 Proxy 总出口 + 各地区组备选 + DIRECT 兜底
+        config = {
+            "proxies": [
+                {"name": "🇭🇰 香港 01", "type": "ss", "server": "1.1.1.1", "port": 1000, "cipher": "aes-128-gcm", "password": "pwd"},
+                {"name": "🇺🇸 美国 01", "type": "ss", "server": "2.2.2.2", "port": 2000, "cipher": "aes-128-gcm", "password": "pwd"}
+            ]
+        }
+        res = self.run_script_with_config(config)
+        for g in res["proxy-groups"]:
+            if g["name"] in ["🎬 国际流媒体", "💬 社交网络", "💻 开发者服务"]:
+                # 首位必须是 Proxy，末尾必须是 DIRECT
+                self.assertEqual(g["proxies"][0], "Proxy", f"{g['name']} 默认出口应为 Proxy")
+                self.assertEqual(g["proxies"][-1], "DIRECT", f"{g['name']} 末尾应为 DIRECT 兜底")
+
 if __name__ == "__main__":
     unittest.main()
