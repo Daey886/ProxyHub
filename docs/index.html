@@ -579,13 +579,13 @@
     <section class="update-notice" id="update-notice" aria-label="网站更新消息">
       <div class="update-notice-icon">📢</div>
       <div class="update-notice-body">
-        <div class="update-notice-title">更新消息 <span class="update-notice-badge">v1.1.15</span></div>
-        <div class="update-notice-date">2026-10-21 · Clash / Mihomo 全局扩展脚本架构升级</div>
+        <div class="update-notice-title">更新消息 <span class="update-notice-badge">v1.1.16</span></div>
+        <div class="update-notice-date">2026-10-22 · 分流策略组隔离与一键导入优化</div>
         <ul class="update-notice-list">
-          <li><strong>保护局域网与设备</strong>：补充 localhost 与私有网段直连，绑定 <code>🔒 私有网络</code>，彻底杜绝内网设备断联和 DNS 环路。</li>
-          <li><strong>中国大陆直连优化</strong>：新增 <code>GEOSITE,CN</code> 与 <code>GEOIP,CN</code> 走 <code>🏠 国内直连</code>，解决国内流量误跑海外节点。</li>
-          <li><strong>规范规则集格式</strong>：外部规则集补充 <code>format: yaml</code>，全面适配新版 Clash Verge Rev 与 Mihomo Party 内核。</li>
-          <li><strong>离线稳定兜底</strong>：本地注入 Direct 虚拟节点并使用 CDN 镜像，解决离线或首启连接 GitHub 超时导致策略组加载报错。</li>
+          <li><strong>国产 AI 纯直连加固</strong>：<code>🇨🇳 国产AI</code> 彻底剥离 Proxy 与海外节点，确保国内大模型服务 100% 走纯国内直连不降速。</li>
+          <li><strong>直连策略组去代理化</strong>：<code>🏠 国内直连</code> 剔除嵌套的 Proxy 策略组，消除国内流量被误路由代理隐患。</li>
+          <li><strong>自循环依赖阻断</strong>：策略组与版本虚拟节点严格命名隔离，杜绝 Clash/Mihomo 内核报 <code>loop is detected in ProxyGroup</code> 错误。</li>
+          <li><strong>客户端一键唤醒修复</strong>：优化 Shadowrocket、Loon、Surge 等 URL Scheme 格式，并增强剪贴板兜底复制。</li>
         </ul>
       </div>
       <button class="update-notice-close" type="button" aria-label="关闭更新消息" onclick="dismissUpdateNotice()">×</button>
@@ -598,7 +598,7 @@
       <div class="card-top">
         <div class="card-header-left">
           <div class="icon-box" style="background: rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.3);">⚡</div>
-          <div class="card-title">Clash 全局扩展配置脚本 <span style="font-size: 13px; font-weight: 600; padding: 2px 8px; border-radius: 6px; background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); vertical-align: middle; margin-left: 6px;">v1.1.15</span><br><span style="font-size:14px;font-weight:500;color:var(--text-muted);">(Clash Verge / Mihomo Party 预处理脚本)</span></div>
+          <div class="card-title">Clash 全局扩展配置脚本 <span style="font-size: 13px; font-weight: 600; padding: 2px 8px; border-radius: 6px; background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); vertical-align: middle; margin-left: 6px;">v1.1.16</span><br><span style="font-size:14px;font-weight:500;color:var(--text-muted);">(Clash Verge / Mihomo Party 预处理脚本)</span></div>
         </div>
         <span class="tag-pill tag-proxy">自动增强<br>(EXT SCRIPT)</span>
       </div>
@@ -617,7 +617,7 @@
       </div>
       <div class="btn-actions">
         <button class="action-btn btn-clash" onclick="openScriptModal()">📋 复制扩展脚本内容 / 引入链接</button>
-        <a class="action-btn btn-copy" href="https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.15/clash/extension-script.js" target="_blank">🌐 预览 JS 源码</a>
+        <a class="action-btn btn-copy" href="https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.16/clash/extension-script.js" target="_blank">🌐 预览 JS 源码</a>
       </div>
     </div>
 
@@ -674,7 +674,7 @@
   <script>
     // GitHub 官方直连 vs 国内 CDN 高速加速镜像
     const BASE_RAW = "https://raw.githubusercontent.com/Daey886/ProxyHub/main";
-    const BASE_SPEED = "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.15";
+    const BASE_SPEED = "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.16";
 
     const modules = [
       {
@@ -831,7 +831,7 @@
 
     function openScriptModal() {
       modalTitle.innerText = "Clash 全局扩展配置脚本";
-      btnSpeed.onclick = () => { copyToClipboard("https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.15/clash/extension-script.js"); closeModal(); };
+      btnSpeed.onclick = () => { copyToClipboard("https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@v1.1.16/clash/extension-script.js"); closeModal(); };
       btnSpeed.removeAttribute("href");
       btnRaw.onclick = () => { copyToClipboard("https://raw.githubusercontent.com/Daey886/ProxyHub/main/clash/extension-script.js"); closeModal(); };
       btnRaw.removeAttribute("href");
@@ -842,11 +842,11 @@
       const notice = document.getElementById("update-notice");
       if (notice) {
         notice.remove();
-        localStorage.setItem("proxyhub-dismissed-update", "v1.1.15");
+        localStorage.setItem("proxyhub-dismissed-update", "v1.1.16");
       }
     }
 
-    if (localStorage.getItem("proxyhub-dismissed-update") === "v1.1.15") {
+    if (localStorage.getItem("proxyhub-dismissed-update") === "v1.1.16") {
       const notice = document.getElementById("update-notice");
       if (notice) notice.remove();
     }

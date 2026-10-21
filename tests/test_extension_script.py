@@ -53,7 +53,7 @@ class TestClashExtensionScript(unittest.TestCase):
         config = {"proxies": []}
         res = self.run_script_with_config(config)
         version_group = next(g for g in res["proxy-groups"] if "当前版本" in g["name"])
-        self.assertIn("🖥️ 当前版本：v1.1.15", version_group.get("proxies", []))
+        self.assertIn("🖥️ 当前版本：v1.1.16", version_group.get("proxies", []))
         self.assertNotIn(version_group["name"], version_group.get("proxies", []))
 
     def test_rule_providers_format_yaml(self):
