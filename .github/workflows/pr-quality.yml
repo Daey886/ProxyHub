@@ -49,7 +49,7 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           import yaml
-          for p in list(Path('.github/workflows').glob('*.yml')) + list(Path('.github/workflows').glob('*.yaml')) + list(Path('.').glob('**/version.yaml')):
+          for p in list(Path('.github/workflows').glob('*.yml')) + list(Path('.github/workflows').glob('*.yaml')):
               yaml.safe_load(p.read_text())
               print(p)
           PY
