@@ -35,6 +35,19 @@ function main(config, profileName) {
 
   if (!config["rule-providers"]) config["rule-providers"] = {};
 
+  // 远程版本订阅：拉取 main 分支上的 version.yaml，让客户端能看到 GitHub 最新发布版本。
+  // 使用 fastly.jsdelivr.net：实测 @main 内容新鲜，且可通过 purge.jsdelivr.net 主动刷新；
+  // 不要换回 testingcf.jsdelivr.net——它对 @main 的缓存不刷新（purge 无效），会长期滞留旧版本号
+  const VERSION_PROVIDER = "proxyhub-version";
+  config["proxy-providers"] = config["proxy-providers"] || {};
+  config["proxy-providers"][VERSION_PROVIDER] = {
+    type: "http",
+    url: "https://fastly.jsdelivr.net/gh/Daey886/ProxyHub@main/clash/version.yaml",
+    path: "./proxy_providers/proxyhub-version.yaml",
+    interval: 3600,
+    "health-check": { enable: false }
+  };
+
   // 版本虚拟节点：往 proxies 注入一个 direct 节点，用于在策略组中显示当前扩展脚本版本
   // 注意：节点名称必须与策略组名称严格区分，否则 Clash/Mihomo 会判定为自循环依赖抛出 "loop is detected in ProxyGroup" 错误
   const versionNodeName = `🖥️ 当前版本：${SCRIPT_VERSION}`;
@@ -268,7 +281,8 @@ function main(config, profileName) {
     {
       name: `📌 当前版本：${SCRIPT_VERSION}`,
       type: "select",
-      proxies: [versionNodeName]
+      proxies: [versionNodeName],
+      use: [VERSION_PROVIDER]
     },
     // Proxy：直接选择各个节点组
     {
