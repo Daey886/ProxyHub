@@ -35,18 +35,7 @@ function main(config, profileName) {
 
   if (!config["rule-providers"]) config["rule-providers"] = {};
 
-  // 远程版本订阅：优先使用 CDN 镜像加速，同时保留本地兜底
-  const VERSION_PROVIDER = "proxyhub-version";
-  config["proxy-providers"] = config["proxy-providers"] || {};
-  config["proxy-providers"][VERSION_PROVIDER] = {
-    type: "http",
-    url: "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@main/clash/version.yaml",
-    path: "./proxy_providers/proxyhub-version.yaml",
-    interval: 3600,
-    "health-check": { enable: false }
-  };
-
-  // 本地冗余兜底：往 proxies 注入虚拟节点，保证离线或首启无网时策略组不报错
+  // 版本虚拟节点：往 proxies 注入一个 direct 节点，用于在策略组中显示当前扩展脚本版本
   // 注意：节点名称必须与策略组名称严格区分，否则 Clash/Mihomo 会判定为自循环依赖抛出 "loop is detected in ProxyGroup" 错误
   const versionNodeName = `🖥️ 当前版本：${SCRIPT_VERSION}`;
   const hasVersionProxy = config.proxies.some(p => p.name === versionNodeName);
@@ -279,8 +268,7 @@ function main(config, profileName) {
     {
       name: `📌 当前版本：${SCRIPT_VERSION}`,
       type: "select",
-      proxies: [versionNodeName],
-      use: [VERSION_PROVIDER]
+      proxies: [versionNodeName]
     },
     // Proxy：直接选择各个节点组
     {

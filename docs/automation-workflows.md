@@ -60,7 +60,7 @@ Cloudflare API 失败、返回空结果或格式异常时，工作流失败并�
 - 生成并上传规则变更报告 artifact
 - Python 编译检查
 - `node --check clash/extension-script.js`
-- 工作流和版本 YAML 解析检查
+- 工作流 YAML 解析检查
 - `git diff --check` 空白字符检查
 
 质量门禁失败时，PR 不应合并。
@@ -122,11 +122,11 @@ Issue 内容是不可信输入，不会被当作 shell、脚本或配置执行�
 工作流会确认：
 
 - 当前运行基于 `main`
-- `clash/version.yaml` 包含对应版本
+- 扩展脚本中的 `SCRIPT_VERSION` 包含对应版本
 - 测试和规则审计通过
 - 同名 tag 尚不存在
 
-通过后才会创建 `v<version>` tag 和 GitHub Release。扩展脚本版本、服务器版本文件、网页固定脚本地址和文档必须在发布 PR 中先同步完成。
+通过后才会创建 `v<version>` tag 和 GitHub Release。扩展脚本版本、网页固定脚本地址和文档必须在发布 PR 中先同步完成。
 
 ## 哪些事情不会自动完成
 

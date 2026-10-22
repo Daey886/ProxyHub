@@ -55,6 +55,11 @@ class TestClashExtensionScript(unittest.TestCase):
         version_group = next(g for g in res["proxy-groups"] if "当前版本" in g["name"])
         self.assertIn("🖥️ 当前版本：v1.1.16", version_group.get("proxies", []))
         self.assertNotIn(version_group["name"], version_group.get("proxies", []))
+        # 远程服务器版本节点已移除：版本组只允许本地虚拟节点，不得挂 proxy-providers
+        self.assertNotIn("use", version_group)
+        for member in version_group.get("proxies", []):
+            self.assertNotIn("服务器版本", member, "版本组不应再包含远程服务器版本节点")
+        self.assertNotIn("proxyhub-version", res.get("proxy-providers", {}))
 
     def test_rule_providers_format_yaml(self):
         config = {"proxies": []}

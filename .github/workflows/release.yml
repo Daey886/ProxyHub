@@ -38,7 +38,7 @@ jobs:
           set -euo pipefail
           [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
           test "${GITHUB_REF_NAME:-}" = main
-          grep -q "v${VERSION}" clash/version.yaml
+          grep -q "SCRIPT_VERSION = \"v${VERSION}\"" clash/extension-script.js
           python -m unittest discover -s tests -v
           python scripts/rules_audit.py
       - name: Create tag and release
