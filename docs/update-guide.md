@@ -7,19 +7,21 @@
 | 文件 | 用途 |
 |---|---|
 | `clash/extension-script.js` | Clash/Mihomo 全局扩展脚本；生成策略组和分流规则 |
+| `clash/version.yaml` | 远程服务器版本文件；由扩展脚本的 `proxyhub-version` provider 拉取，用于在客户端显示 GitHub 最新版本 |
 | `docs/index.html` | GitHub Pages 首页和扩展脚本入口 |
 | `.github/workflows/pages-healthcheck.yml` | 低频检查 GitHub Pages 是否正常 |
 
 ## 2. 版本规则
 
-每次对外发布必须同时维护两个版本：
+每次对外发布必须同时维护三个版本：
 
 1. 扩展脚本中的 `SCRIPT_VERSION`
-2. Git 标签和 GitHub Release
+2. `clash/version.yaml` 中的服务器版本
+3. Git 标签和 GitHub Release
 
 版本格式统一为 `vMAJOR.MINOR.PATCH`，例如 `v1.1.14`。
 
-策略组中的 `📌 当前版本：...` 表示用户当前下载的扩展脚本版本。
+策略组中的 `📌 当前版本：...` 表示用户当前下载的扩展脚本版本；其中的 `🖥️ 服务器版本：...` 节点来自远程 provider（`fastly.jsdelivr.net` 拉取 `@main/clash/version.yaml`），表示 GitHub 上的最新版本。两个版本号不一致说明有新版本未导入。
 
 ## 3. 修改扩展脚本
 
@@ -40,7 +42,8 @@ const SCRIPT_VERSION = "v1.1.14";
 - 原订阅的真实节点保留，供 ProxyHub 自动分组使用。
 - 原订阅的 `proxy-groups` 全部丢弃，避免用户策略残留和重复组名。
 - 原订阅的顶层 `rules` 全部丢弃，仅使用脚本生成的规则。
-- 版本策略组只使用脚本注入的版本虚拟节点。
+- 版本策略组由本地版本虚拟节点兜底，并挂载 `proxyhub-version` 远程 provider 同步服务器版本。
+- 服务器版本节点只能来自远程 provider，严禁注入本地 `proxies`。
 - 不要把版本虚拟节点当作真实代理节点使用。
 
 ## 4. 更新网页入口
@@ -82,7 +85,7 @@ git pull --ff-only origin main
 # 修改文件
 node --check clash/extension-script.js
 git diff --check
-git add clash/extension-script.js docs/index.html docs/update-guide.md
+git add clash/extension-script.js clash/version.yaml docs/index.html docs/update-guide.md
 git commit -m "release: v1.1.14"
 git push origin main
 gh release create v1.1.14 --target main \
@@ -122,6 +125,15 @@ curl -4 -fsSL \
   "https://testingcf.jsdelivr.net/gh/Daey886/ProxyHub@<SCRIPT_COMMIT>/clash/extension-script.js" \
   | grep SCRIPT_VERSION
 ```
+
+检查远程版本文件（客户端版本节点的数据源）：
+
+```bash
+curl -4 -fsSL \
+  "https://fastly.jsdelivr.net/gh/Daey886/ProxyHub@main/clash/version.yaml"
+```
+
+发布工作流在创建 Release 后会自动调用 `purge.jsdelivr.net` 刷新 `version.yaml` 和 `extension-script.js` 的 CDN 缓存；如果回源仍是旧版本，可手动执行同样的 purge 命令。注意：`testingcf.jsdelivr.net` 对 `@main` 的缓存无法 purge，严禁把版本文件的拉取地址换回 testingcf。
 
 如果远程内容仍是旧版本，先确认 `main` 已更新，再使用固定提交地址；不要把缓存的 `@main` 内容当作发布结果。
 
@@ -193,6 +205,7 @@ python -m unittest discover -s tests -v
 ## 11. 发布检查清单
 
 - [ ] `SCRIPT_VERSION` 已更新
+- [ ] `clash/version.yaml` 服务器版本已同步
 - [ ] `docs/index.html` 已同步
 - [ ] `node --check` 通过
 - [ ] 原订阅策略组已清除
@@ -203,3 +216,4 @@ python -m unittest discover -s tests -v
 - [ ] Git 标签已创建
 - [ ] GitHub Release 已发布并标记 Latest
 - [ ] 固定提交脚本地址回源内容正确
+- [ ] `fastly.jsdelivr.net` 上的 `version.yaml` 已刷新为新版本

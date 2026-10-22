@@ -39,6 +39,7 @@ jobs:
           [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
           test "${GITHUB_REF_NAME:-}" = main
           grep -q "SCRIPT_VERSION = \"v${VERSION}\"" clash/extension-script.js
+          grep -q "v${VERSION}" clash/version.yaml
           python -m unittest discover -s tests -v
           python scripts/rules_audit.py
       - name: Create tag and release
@@ -55,3 +56,8 @@ jobs:
           git tag -a "$tag" -m "Release $tag"
           git push origin "$tag"
           gh release create "$tag" --repo "$GITHUB_REPOSITORY" --title "ProxyHub $tag" --generate-notes
+      - name: Purge CDN cache for version.yaml
+        run: |
+          # 发布后主动刷新 jsDelivr 对 @main 的缓存，让客户端版本节点尽快显示新版本号
+          curl -fsS "https://purge.jsdelivr.net/gh/${GITHUB_REPOSITORY}@main/clash/version.yaml" || true
+          curl -fsS "https://purge.jsdelivr.net/gh/${GITHUB_REPOSITORY}@main/clash/extension-script.js" || true
