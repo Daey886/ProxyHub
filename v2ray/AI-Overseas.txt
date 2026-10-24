@@ -1,5 +1,5 @@
 # AI-Overseas Ruleset for V2Ray / Xray / v2rayN / v2rayNG
-# Total Domains: 64
+# Total Domains: 65
 # Managed by scripts/auto_update_ai.py - manual additions are preserved.
 
 domain:accounts.google.com
@@ -54,6 +54,7 @@ domain:openai.com
 domain:openrouter.ai
 domain:perplexity.ai
 domain:poe.com
+domain:relay.mirasim.ai
 domain:replicate.com
 domain:router.huggingface.co
 domain:runwayml.com
