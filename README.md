@@ -259,6 +259,7 @@ rules:
 
 | 日期 | 变动类型 | 涉及平台 / 厂商 | 分流策略 | 详细说明 |
 | :--- | :--- | :--- | :--- | :--- |
+| `2026-10-24` | 🤖 **自动同步** | anthropic, baai, bytedance, cohere, deepseek, fireworks, google, meta, minimax, mistral, moonshot, openai, openrouter, perplexity, qwen, stepfun, tencent, xai, zhipu | `海外AI` / `DIRECT` | 收录 19 个匹配平台，新增 1 个域名（AI-Overseas: 1），重复域名已去重 |
 | `2026-10-19` | 🤖 **自动同步** | anthropic, baai, bytedance, cohere, deepseek, fireworks, google, meta, minimax, mistral, moonshot, openai, openrouter, perplexity, qwen, stepfun, tencent | `海外AI` / `DIRECT` | 收录 17 个匹配平台，新增 12 个域名，重复域名已去重 |
 | `2026-10-18` | 🤖 **自动同步** | anthropic, baai, bytedance, cohere, deepseek, fireworks, google, meta, minimax, mistral, moonshot, openai, openrouter, perplexity, qwen, stepfun, tencent | `海外AI` / `DIRECT` | 收录 17 个匹配平台，新增 0 个域名，重复域名已去重 |
 | `2026-10-18` | 🚀 **初始化上线** | LMSYS & OpenRouter 头部全矩阵 | `海外AI` / `DIRECT` | 自动抓取并初始化收录 89+ 全球 AI 活跃机构与提供商 |

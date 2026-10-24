@@ -1,5 +1,5 @@
 # AI-Overseas Ruleset (Auto-Generated)
-# Total Domains: 64
+# Total Domains: 65
 # Managed by scripts/auto_update_ai.py - manual additions are preserved.
 
 DOMAIN-SUFFIX,accounts.google.com
@@ -54,6 +54,7 @@ DOMAIN-SUFFIX,openai.com
 DOMAIN-SUFFIX,openrouter.ai
 DOMAIN-SUFFIX,perplexity.ai
 DOMAIN-SUFFIX,poe.com
+DOMAIN-SUFFIX,relay.mirasim.ai
 DOMAIN-SUFFIX,replicate.com
 DOMAIN-SUFFIX,router.huggingface.co
 DOMAIN-SUFFIX,runwayml.com
