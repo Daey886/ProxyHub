@@ -45,6 +45,8 @@ class TestClashExtensionScript(unittest.TestCase):
         # 验证国内直连规则存在
         self.assertTrue(any("GEOSITE,CN" in r for r in rules))
         self.assertTrue(any("GEOIP,CN" in r for r in rules))
+        self.assertTrue(any("DOMAIN-SUFFIX,x-max.dev,🏠 国内直连" in r for r in rules))
+        self.assertTrue(any("DOMAIN-SUFFIX,bing.com,🏠 国内直连" in r for r in rules))
         # 验证漏网之鱼在最后
         self.assertEqual(rules[-1], "MATCH,🐟 漏网之鱼")
 

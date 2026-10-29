@@ -384,6 +384,11 @@ function main(config, profileName) {
     "RULE-SET,social,💬 社交网络",
     "RULE-SET,development,💻 开发者服务",
 
+    // 常用国内与直连域名保护 (机场订阅/Bing/国内常用服务)
+    "DOMAIN-SUFFIX,x-max.dev,🏠 国内直连",
+    "DOMAIN-SUFFIX,bing.com,🏠 国内直连",
+    "DOMAIN-SUFFIX,bing.net,🏠 国内直连",
+
     // 中国大陆域名与 IP 直连保护（避免国内流量全跑国外代理导致高延迟与风控）
     "DOMAIN-SUFFIX,cn,🏠 国内直连",
     "GEOSITE,CN,🏠 国内直连",
